@@ -81,8 +81,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Lovable App" },
-      { name: "description", content: "FinWise — Controle financeiro simples, inteligente e visual para acompanhar gastos, receitas e metas financeiras. 
-Por: Ronaldo Martins." },
+      { name: "description", content: "FinWise — Controle financeiro simples, inteligente e visual para acompanhar gastos, receitas e metas financeiras. Por: Ronaldo Martins." },
       { name: "author", content: "Lovable" },
       { property: "og:title", content: "Lovable App" },
       { property: "og:description", content: "FinWise — Controle financeiro simples, inteligente e visual para acompanhar gastos, receitas e metas financeiras. 
