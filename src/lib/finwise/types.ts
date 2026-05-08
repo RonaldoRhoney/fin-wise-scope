@@ -16,17 +16,13 @@ export type Transaction = {
 
 export type Filters = {
   period: "7d" | "30d" | "all";
-  categoryId: string; // "all" or id
+  categoryId: string;
   search: string;
   type: "all" | "entrada" | "despesa";
 };
 
 export type Profile = {
+  id: number;
   name: string;
   email: string;
-  currency: string;
-  locale: string;
-  persistLocal: boolean;
-  clearOnLogout: boolean;
-  loggedIn: boolean;
 };
