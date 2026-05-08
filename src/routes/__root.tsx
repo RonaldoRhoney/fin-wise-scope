@@ -4,14 +4,19 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
+  useNavigate,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { useEffect } from "react";
 
 import appCss from "../styles.css?url";
-import { FinwiseProvider } from "@/lib/finwise/store";
+import { FinwiseProvider, useFinwise } from "@/lib/finwise/store";
 import { AppSidebar } from "@/components/finwise/AppSidebar";
 import { Toaster } from "@/components/ui/sonner";
+
+const PUBLIC_ROUTES = ["/auth", "/reset-password"];
 
 function NotFoundComponent() {
   return (
@@ -117,14 +122,41 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <FinwiseProvider>
-        <div className="flex min-h-screen w-full bg-background text-foreground">
-          <AppSidebar />
-          <main className="flex-1 overflow-x-hidden">
-            <Outlet />
-          </main>
-        </div>
+        <Shell />
         <Toaster richColors position="top-right" />
       </FinwiseProvider>
     </QueryClientProvider>
+  );
+}
+
+function Shell() {
+  const { session, loading } = useFinwise();
+  const path = useRouterState({ select: (s) => s.location.pathname });
+  const navigate = useNavigate();
+  const isPublic = PUBLIC_ROUTES.includes(path);
+
+  useEffect(() => {
+    if (!loading && !session && !isPublic) navigate({ to: "/auth" });
+  }, [loading, session, isPublic, navigate]);
+
+  if (isPublic) {
+    return (
+      <div className="min-h-screen w-full bg-background text-foreground">
+        <Outlet />
+      </div>
+    );
+  }
+
+  if (loading || !session) {
+    return <div className="flex min-h-screen items-center justify-center bg-background text-sm text-muted-foreground">Carregando…</div>;
+  }
+
+  return (
+    <div className="flex min-h-screen w-full bg-background text-foreground">
+      <AppSidebar />
+      <main className="flex-1 overflow-x-hidden">
+        <Outlet />
+      </main>
+    </div>
   );
 }

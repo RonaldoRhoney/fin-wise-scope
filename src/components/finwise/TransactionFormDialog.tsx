@@ -43,7 +43,7 @@ export function TransactionFormDialog({ open, onOpenChange, initial }: Props) {
 
   const filteredCats = categories.filter((c) => c.kind === type);
 
-  const submit = () => {
+  const submit = async () => {
     const value = parseFloat(amount.replace(",", "."));
     const errs: string[] = [];
     if (!description.trim()) errs.push("Descrição é obrigatória");
@@ -55,14 +55,18 @@ export function TransactionFormDialog({ open, onOpenChange, initial }: Props) {
       return;
     }
     const payload = { type, date, description: description.trim(), categoryId, amount: value };
-    if (initial) {
-      updateTransaction(initial.id, payload);
-      toast.success("Registro atualizado com sucesso.");
-    } else {
-      addTransaction(payload);
-      toast.success("Registro criado com sucesso.");
+    try {
+      if (initial) {
+        await updateTransaction(initial.id, payload);
+        toast.success("Registro atualizado com sucesso.");
+      } else {
+        await addTransaction(payload);
+        toast.success("Registro criado com sucesso.");
+      }
+      onOpenChange(false);
+    } catch (err: any) {
+      toast.error(err.message ?? "Falha ao salvar");
     }
-    onOpenChange(false);
   };
 
   return (
