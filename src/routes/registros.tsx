@@ -199,10 +199,14 @@ function Registros() {
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              onClick={() => {
+              onClick={async () => {
                 if (confirmDel) {
-                  deleteTransaction(confirmDel.id);
-                  toast.success("Registro removido.");
+                  try {
+                    await deleteTransaction(confirmDel.id);
+                    toast.success("Registro removido.");
+                  } catch (err: any) {
+                    toast.error(err.message ?? "Falha ao remover");
+                  }
                 }
                 setConfirmDel(null);
               }}
