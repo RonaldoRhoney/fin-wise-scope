@@ -64,10 +64,10 @@ function Dashboard() {
   const hasData = filtered.length > 0;
 
   return (
-    <div className="mx-auto max-w-7xl p-6 lg:p-8">
-      <header className="mb-6 flex flex-wrap items-center justify-between gap-4">
+    <div className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
+      <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
+          <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">Dashboard</h1>
           <p className="text-sm text-muted-foreground">Visão geral das suas finanças</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -84,7 +84,7 @@ function Dashboard() {
             ))}
           </div>
           <Select value={filters.categoryId} onValueChange={(v) => setFilters({ categoryId: v })}>
-            <SelectTrigger className="w-[180px]"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="w-full sm:w-[180px]"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todas as categorias</SelectItem>
               {categories.map((c) => (
