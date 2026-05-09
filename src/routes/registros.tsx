@@ -122,42 +122,44 @@ function Registros() {
               </Button>
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Data</TableHead>
-                  <TableHead>Descrição</TableHead>
-                  <TableHead className="hidden md:table-cell">Categoria</TableHead>
-                  <TableHead>Tipo</TableHead>
-                  <TableHead className="text-right">Valor</TableHead>
-                  <TableHead className="w-[140px] text-right">Ações</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {visible.map((t) => (
-                  <TableRow key={t.id}>
-                    <TableCell className="whitespace-nowrap text-sm">{formatDate(t.date)}</TableCell>
-                    <TableCell className="font-medium">{t.description}</TableCell>
-                    <TableCell className="hidden md:table-cell text-sm text-muted-foreground">{catName(t.categoryId)}</TableCell>
-                    <TableCell>
-                      <Badge variant={t.type === "entrada" ? "default" : "secondary"} className={t.type === "entrada" ? "bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/20" : "bg-rose-500/15 text-rose-300 hover:bg-rose-500/20"}>
-                        {t.type === "entrada" ? "Entrada" : "Despesa"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className={`text-right font-medium ${t.type === "entrada" ? "text-emerald-400" : "text-rose-400"}`}>
-                      {t.type === "entrada" ? "+" : "−"} {brl(t.amount)}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-1">
-                        <Button size="icon" variant="ghost" onClick={() => setViewing(t)}><Eye className="h-4 w-4" /></Button>
-                        <Button size="icon" variant="ghost" onClick={() => { setEditing(t); setOpenForm(true); }}><Pencil className="h-4 w-4" /></Button>
-                        <Button size="icon" variant="ghost" onClick={() => setConfirmDel(t)}><Trash2 className="h-4 w-4 text-rose-400" /></Button>
-                      </div>
-                    </TableCell>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Data</TableHead>
+                    <TableHead>Descrição</TableHead>
+                    <TableHead className="hidden md:table-cell">Categoria</TableHead>
+                    <TableHead>Tipo</TableHead>
+                    <TableHead className="text-right">Valor</TableHead>
+                    <TableHead className="w-[140px] text-right">Ações</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {visible.map((t) => (
+                    <TableRow key={t.id}>
+                      <TableCell className="whitespace-nowrap text-sm">{formatDate(t.date)}</TableCell>
+                      <TableCell className="font-medium">{t.description}</TableCell>
+                      <TableCell className="hidden md:table-cell text-sm text-muted-foreground">{catName(t.categoryId)}</TableCell>
+                      <TableCell>
+                        <Badge variant={t.type === "entrada" ? "default" : "secondary"} className={t.type === "entrada" ? "bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/20" : "bg-rose-500/15 text-rose-300 hover:bg-rose-500/20"}>
+                          {t.type === "entrada" ? "Entrada" : "Despesa"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className={`whitespace-nowrap text-right font-medium ${t.type === "entrada" ? "text-emerald-400" : "text-rose-400"}`}>
+                        {t.type === "entrada" ? "+" : "−"} {brl(t.amount)}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-1">
+                          <Button size="icon" variant="ghost" onClick={() => setViewing(t)}><Eye className="h-4 w-4" /></Button>
+                          <Button size="icon" variant="ghost" onClick={() => { setEditing(t); setOpenForm(true); }}><Pencil className="h-4 w-4" /></Button>
+                          <Button size="icon" variant="ghost" onClick={() => setConfirmDel(t)}><Trash2 className="h-4 w-4 text-rose-400" /></Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           )}
         </CardContent>
       </Card>
