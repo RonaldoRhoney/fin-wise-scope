@@ -158,9 +158,12 @@ function Shell() {
   return (
     <div className="flex min-h-screen w-full bg-background text-foreground">
       <AppSidebar />
-      <main className="flex-1 overflow-x-hidden">
-        <Outlet />
-      </main>
+      <div className="flex min-w-0 flex-1 flex-col">
+        <MobileTopBar />
+        <main className="flex-1 overflow-x-hidden">
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 }
