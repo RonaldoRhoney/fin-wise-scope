@@ -87,6 +87,18 @@ function AuthPage() {
           <p className="text-center text-sm text-muted-foreground">Controle suas finanças</p>
         </CardHeader>
         <CardContent>
+          <div className="grid gap-2 pb-4">
+            <Button type="button" variant="outline" disabled={busy} onClick={onGoogle}>
+              <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="currentColor" d="M12 10.2v3.9h5.5c-.24 1.3-1.66 3.8-5.5 3.8-3.31 0-6-2.74-6-6.1s2.69-6.1 6-6.1c1.88 0 3.14.8 3.86 1.49l2.63-2.54C16.84 3.13 14.65 2.2 12 2.2 6.85 2.2 2.7 6.35 2.7 11.5S6.85 20.8 12 20.8c6.93 0 9.3-4.86 9.3-7.4 0-.5-.05-.88-.13-1.2H12z"/>
+              </svg>
+              Continuar com Google
+            </Button>
+            <div className="relative my-1 text-center text-xs text-muted-foreground">
+              <span className="relative z-10 bg-card px-2">ou com email</span>
+              <div className="absolute inset-x-0 top-1/2 h-px bg-border" />
+            </div>
+          </div>
           <Tabs value={tab} onValueChange={(v) => setTab(v as any)}>
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="login">Entrar</TabsTrigger>
