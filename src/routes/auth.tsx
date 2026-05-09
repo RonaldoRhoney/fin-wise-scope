@@ -82,11 +82,23 @@ function AuthPage() {
   const onApple = () => onOAuth("apple");
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-6">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-center text-2xl">FinWise</CardTitle>
-          <p className="text-center text-sm text-muted-foreground">Controle suas finanças</p>
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden p-6" style={{ background: "var(--gradient-hero)" }}>
+      {/* subtle floating dollar signs */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden select-none">
+        <span className="absolute left-[8%] top-[12%] text-7xl font-light text-primary/10 blur-[1px]">$</span>
+        <span className="absolute left-[78%] top-[18%] text-5xl font-light text-primary/15">$</span>
+        <span className="absolute left-[20%] top-[78%] text-6xl font-light text-accent/15">$</span>
+        <span className="absolute left-[85%] top-[72%] text-8xl font-light text-primary/10 blur-[2px]">$</span>
+        <span className="absolute left-[45%] top-[6%] text-4xl font-light text-primary/20">$</span>
+        <span className="absolute left-[60%] top-[88%] text-5xl font-light text-accent/15 blur-[1px]">$</span>
+      </div>
+      <Card className="relative w-full max-w-md border-border/60 backdrop-blur-sm" style={{ boxShadow: "var(--shadow-elegant)" }}>
+        <CardHeader className="space-y-2">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl text-2xl font-semibold text-primary-foreground" style={{ background: "var(--gradient-primary)", boxShadow: "var(--shadow-glow)" }}>
+            $
+          </div>
+          <CardTitle className="text-center text-2xl tracking-tight">FinWise</CardTitle>
+          <p className="text-center text-sm text-muted-foreground">Controle suas finanças com elegância</p>
         </CardHeader>
         <CardContent>
           <div className="grid gap-2 pb-4">
