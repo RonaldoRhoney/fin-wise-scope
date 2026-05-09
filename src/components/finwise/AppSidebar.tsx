@@ -1,27 +1,32 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, ListChecks, User } from "lucide-react";
+import { LayoutDashboard, ListChecks, Menu, User } from "lucide-react";
+import { useState } from "react";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
 
 const links = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
   { to: "/registros", label: "Meus Registros", icon: ListChecks },
+  { to: "/perfil", label: "Meu Perfil", icon: User },
 ];
 
-export function AppSidebar() {
+function NavContent({ onNavigate }: { onNavigate?: () => void }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
   return (
-    <aside className="flex w-60 shrink-0 flex-col border-r border-border/60 bg-sidebar p-4">
+    <div className="flex h-full flex-col p-4">
       <div className="mb-8 px-2">
         <div className="text-xl font-semibold tracking-tight">FinWise</div>
         <div className="text-xs text-muted-foreground">Controle financeiro</div>
       </div>
       <nav className="flex flex-1 flex-col gap-1">
-        {links.map((l) => {
+        {links.slice(0, 2).map((l) => {
           const active = path === l.to;
           const Icon = l.icon;
           return (
             <Link
               key={l.to}
               to={l.to}
+              onClick={onNavigate}
               className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
                 active
                   ? "bg-sidebar-accent text-sidebar-accent-foreground"
@@ -36,6 +41,7 @@ export function AppSidebar() {
       </nav>
       <Link
         to="/perfil"
+        onClick={onNavigate}
         className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
           path === "/perfil"
             ? "bg-sidebar-accent text-sidebar-accent-foreground"
@@ -45,6 +51,34 @@ export function AppSidebar() {
         <User className="h-4 w-4" />
         Meu Perfil
       </Link>
+    </div>
+  );
+}
+
+export function AppSidebar() {
+  return (
+    <aside className="hidden w-60 shrink-0 border-r border-border/60 bg-sidebar lg:block">
+      <NavContent />
     </aside>
+  );
+}
+
+export function MobileTopBar() {
+  const [open, setOpen] = useState(false);
+  return (
+    <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border/60 bg-sidebar/80 px-4 backdrop-blur lg:hidden">
+      <div className="text-base font-semibold tracking-tight">FinWise</div>
+      <Sheet open={open} onOpenChange={setOpen}>
+        <SheetTrigger asChild>
+          <Button size="icon" variant="ghost" aria-label="Abrir menu">
+            <Menu className="h-5 w-5" />
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left" className="w-64 bg-sidebar p-0">
+          <SheetTitle className="sr-only">Menu</SheetTitle>
+          <NavContent onNavigate={() => setOpen(false)} />
+        </SheetContent>
+      </Sheet>
+    </header>
   );
 }
