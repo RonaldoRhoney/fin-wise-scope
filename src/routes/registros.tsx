@@ -18,7 +18,7 @@ import {
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
-import { Eye, Pencil, Plus, Search, Trash2, ArrowUpCircle, ArrowDownCircle, Wallet } from "lucide-react";
+import { Eye, Pencil, Plus, Search, Trash2, ArrowUpCircle, ArrowDownCircle, Wallet, History } from "lucide-react";
 import { TransactionFormDialog } from "@/components/finwise/TransactionFormDialog";
 import { toast } from "sonner";
 
@@ -60,6 +60,10 @@ function Registros() {
     }).sort((a, b) => b.date.localeCompare(a.date));
   }, [transactions, filters]);
 
+  const totalIn = useMemo(() => filtered.filter((t) => t.type === "entrada").reduce((s, t) => s + t.amount, 0), [filtered]);
+  const totalOut = useMemo(() => filtered.filter((t) => t.type === "despesa").reduce((s, t) => s + t.amount, 0), [filtered]);
+  const saldo = totalIn - totalOut;
+
   const PAGE_SIZE = 20;
   const paginated = filtered.length > 50;
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
@@ -79,90 +83,132 @@ function Registros() {
         </Button>
       </header>
 
-      <Card className="mb-4">
-        <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:flex-wrap">
-          <div className="relative w-full flex-1 sm:min-w-[200px]">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              ref={searchRef}
-              value={filters.search}
-              onChange={(e) => setFilters({ search: e.target.value })}
-              placeholder="Buscar por descrição… (atalho: /)"
-              className="pl-9"
-            />
-          </div>
-          <Select value={filters.type} onValueChange={(v) => setFilters({ type: v as any })}>
-            <SelectTrigger className="w-full sm:w-[180px]"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todos os tipos</SelectItem>
-              <SelectItem value="entrada">Apenas entradas</SelectItem>
-              <SelectItem value="despesa">Apenas despesas</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={filters.categoryId} onValueChange={(v) => setFilters({ categoryId: v })}>
-            <SelectTrigger className="w-full sm:w-[200px]"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todas categorias</SelectItem>
-              {categories.map((c) => (
-                <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </CardContent>
-      </Card>
+      <section className="mb-6 grid gap-4 sm:grid-cols-3">
+        <Card className="transition-all hover:border-primary/40">
+          <CardContent className="p-5">
+            <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
+              <span>💰 Entradas</span>
+              <ArrowUpCircle className="h-4 w-4 text-emerald-400" />
+            </div>
+            <div className="text-2xl font-semibold tracking-tight text-emerald-400">{brl(totalIn)}</div>
+            <div className="mt-1 text-xs text-muted-foreground">{filtered.filter((t) => t.type === "entrada").length} registros</div>
+          </CardContent>
+        </Card>
+        <Card className="transition-all hover:border-primary/40">
+          <CardContent className="p-5">
+            <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
+              <span>💸 Despesas</span>
+              <ArrowDownCircle className="h-4 w-4 text-rose-400" />
+            </div>
+            <div className="text-2xl font-semibold tracking-tight text-rose-400">{brl(totalOut)}</div>
+            <div className="mt-1 text-xs text-muted-foreground">{filtered.filter((t) => t.type === "despesa").length} registros</div>
+          </CardContent>
+        </Card>
+        <Card className="transition-all hover:border-primary/40">
+          <CardContent className="p-5">
+            <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
+              <span>Saldo</span>
+              <Wallet className="h-4 w-4 text-sky-400" />
+            </div>
+            <div className={`text-2xl font-semibold tracking-tight ${saldo >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
+              {brl(saldo)}
+            </div>
+            <div className="mt-1 text-xs text-muted-foreground">Balanço do período</div>
+          </CardContent>
+        </Card>
+      </section>
 
-      <Card>
-        <CardContent className="p-0">
-          {filtered.length === 0 ? (
-            <div className="flex flex-col items-center gap-3 p-12 text-center">
-              <div className="text-base font-medium">Nenhum registro encontrado</div>
-              <p className="text-sm text-muted-foreground">Comece adicionando seu primeiro lançamento.</p>
-              <Button onClick={() => { setEditing(null); setOpenForm(true); }}>
-                <Plus className="h-4 w-4" /> Adicionar primeiro registro
-              </Button>
+      <section>
+        <div className="mb-4 flex items-center gap-2">
+          <History className="h-5 w-5 text-muted-foreground" />
+          <h2 className="text-lg font-semibold tracking-tight">📋 Histórico</h2>
+        </div>
+
+        <Card className="mb-4">
+          <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:flex-wrap">
+            <div className="relative w-full flex-1 sm:min-w-[200px]">
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                ref={searchRef}
+                value={filters.search}
+                onChange={(e) => setFilters({ search: e.target.value })}
+                placeholder="Buscar por descrição… (atalho: /)"
+                className="pl-9"
+              />
             </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Data</TableHead>
-                    <TableHead>Descrição</TableHead>
-                    <TableHead className="hidden md:table-cell">Categoria</TableHead>
-                    <TableHead>Tipo</TableHead>
-                    <TableHead className="text-right">Valor</TableHead>
-                    <TableHead className="w-[140px] text-right">Ações</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {visible.map((t) => (
-                    <TableRow key={t.id}>
-                      <TableCell className="whitespace-nowrap text-sm">{formatDate(t.date)}</TableCell>
-                      <TableCell className="font-medium">{t.description}</TableCell>
-                      <TableCell className="hidden md:table-cell text-sm text-muted-foreground">{catName(t.categoryId)}</TableCell>
-                      <TableCell>
-                        <Badge variant={t.type === "entrada" ? "default" : "secondary"} className={t.type === "entrada" ? "bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/20" : "bg-rose-500/15 text-rose-300 hover:bg-rose-500/20"}>
-                          {t.type === "entrada" ? "Entrada" : "Despesa"}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className={`whitespace-nowrap text-right font-medium ${t.type === "entrada" ? "text-emerald-400" : "text-rose-400"}`}>
-                        {t.type === "entrada" ? "+" : "−"} {brl(t.amount)}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-1">
-                          <Button size="icon" variant="ghost" onClick={() => setViewing(t)}><Eye className="h-4 w-4" /></Button>
-                          <Button size="icon" variant="ghost" onClick={() => { setEditing(t); setOpenForm(true); }}><Pencil className="h-4 w-4" /></Button>
-                          <Button size="icon" variant="ghost" onClick={() => setConfirmDel(t)}><Trash2 className="h-4 w-4 text-rose-400" /></Button>
-                        </div>
-                      </TableCell>
+            <Select value={filters.type} onValueChange={(v) => setFilters({ type: v as any })}>
+              <SelectTrigger className="w-full sm:w-[180px]"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos os tipos</SelectItem>
+                <SelectItem value="entrada">Apenas entradas</SelectItem>
+                <SelectItem value="despesa">Apenas despesas</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={filters.categoryId} onValueChange={(v) => setFilters({ categoryId: v })}>
+              <SelectTrigger className="w-full sm:w-[200px]"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todas categorias</SelectItem>
+                {categories.map((c) => (
+                  <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-0">
+            {filtered.length === 0 ? (
+              <div className="flex flex-col items-center gap-3 p-12 text-center">
+                <div className="text-base font-medium">Nenhum registro encontrado</div>
+                <p className="text-sm text-muted-foreground">Comece adicionando seu primeiro lançamento.</p>
+                <Button onClick={() => { setEditing(null); setOpenForm(true); }}>
+                  <Plus className="h-4 w-4" /> Adicionar primeiro registro
+                </Button>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Data</TableHead>
+                      <TableHead>Descrição</TableHead>
+                      <TableHead className="hidden md:table-cell">Categoria</TableHead>
+                      <TableHead>Tipo</TableHead>
+                      <TableHead className="text-right">Valor</TableHead>
+                      <TableHead className="w-[140px] text-right">Ações</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+                  </TableHeader>
+                  <TableBody>
+                    {visible.map((t) => (
+                      <TableRow key={t.id}>
+                        <TableCell className="whitespace-nowrap text-sm">{formatDate(t.date)}</TableCell>
+                        <TableCell className="font-medium">{t.description}</TableCell>
+                        <TableCell className="hidden md:table-cell text-sm text-muted-foreground">{catName(t.categoryId)}</TableCell>
+                        <TableCell>
+                          <Badge variant={t.type === "entrada" ? "default" : "secondary"} className={t.type === "entrada" ? "bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/20" : "bg-rose-500/15 text-rose-300 hover:bg-rose-500/20"}>
+                            {t.type === "entrada" ? "Entrada" : "Despesa"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className={`whitespace-nowrap text-right font-medium ${t.type === "entrada" ? "text-emerald-400" : "text-rose-400"}`}>
+                          {t.type === "entrada" ? "+" : "−"} {brl(t.amount)}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-1">
+                            <Button size="icon" variant="ghost" onClick={() => setViewing(t)}><Eye className="h-4 w-4" /></Button>
+                            <Button size="icon" variant="ghost" onClick={() => { setEditing(t); setOpenForm(true); }}><Pencil className="h-4 w-4" /></Button>
+                            <Button size="icon" variant="ghost" onClick={() => setConfirmDel(t)}><Trash2 className="h-4 w-4 text-rose-400" /></Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </section>
 
       {paginated && (
         <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
