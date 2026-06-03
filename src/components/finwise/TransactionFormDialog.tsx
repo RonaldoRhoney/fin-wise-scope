@@ -42,7 +42,7 @@ export function TransactionFormDialog({ open, onOpenChange, initial, forcedType 
     }
   }, [open, initial, forcedType]);
 
-  const filteredCats = categories.filter((c) => c.kind === type);
+  const filteredCats = categories.filter((c) => c.kind === type || c.kind === "both");
 
   const submit = async () => {
     const value = parseFloat(amount.replace(",", "."));

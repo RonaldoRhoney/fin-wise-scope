@@ -1,7 +1,7 @@
 export type Category = {
   id: string;
   name: string;
-  kind: "despesa" | "entrada";
+  kind: "despesa" | "entrada" | "both";
   color?: string;
 };
 

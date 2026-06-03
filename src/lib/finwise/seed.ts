@@ -10,8 +10,7 @@ export const SEED_CATEGORIES: Category[] = [
   { id: "cat_assinaturas", name: "Assinaturas", kind: "despesa", color: "#ec4899" },
   { id: "cat_salario", name: "Salário", kind: "entrada", color: "#22c55e" },
   { id: "cat_freela", name: "Freelance", kind: "entrada", color: "#84cc16" },
-  { id: "cat_outros_despesa", name: "Outros", kind: "despesa", color: "#6b7280" },
-  { id: "cat_outros_entrada", name: "Outros", kind: "entrada", color: "#6b7280" },
+  { id: "cat_outros", name: "Outros", kind: "both", color: "#6b7280" },
 ];
 
 export const SEED_TRANSACTIONS: Transaction[] = [
