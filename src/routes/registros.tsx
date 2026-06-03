@@ -79,9 +79,22 @@ function Registros() {
           <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">Meus Registros</h1>
           <p className="text-sm text-muted-foreground">Gerencie suas entradas e despesas</p>
         </div>
-        <Button onClick={() => { setEditing(null); setOpenForm(true); }} className="w-full sm:w-auto">
-          <Plus className="h-4 w-4" /> Novo Registro
-        </Button>
+        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+          <Button
+            onClick={() => { setEditing(null); setFormType("entrada"); setOpenForm(true); }}
+            className="w-full bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/25 sm:w-auto"
+            variant="secondary"
+          >
+            <ArrowUpCircle className="h-4 w-4" /> Nova Entrada
+          </Button>
+          <Button
+            onClick={() => { setEditing(null); setFormType("despesa"); setOpenForm(true); }}
+            className="w-full bg-rose-500/15 text-rose-300 hover:bg-rose-500/25 sm:w-auto"
+            variant="secondary"
+          >
+            <ArrowDownCircle className="h-4 w-4" /> Nova Despesa
+          </Button>
+        </div>
       </header>
 
       <section className="mb-6 grid gap-4 sm:grid-cols-3">
