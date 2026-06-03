@@ -37,8 +37,6 @@ function Registros() {
   const [confirmDel, setConfirmDel] = useState<Transaction | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
-  const searchRef = useRef<HTMLInputElement>(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
