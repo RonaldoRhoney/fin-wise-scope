@@ -74,19 +74,29 @@ export function TransactionFormDialog({ open, onOpenChange, initial, forcedType 
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{initial ? "Editar registro" : "Novo registro"}</DialogTitle>
+          <DialogTitle>
+            {initial
+              ? "Editar registro"
+              : forcedType === "entrada"
+              ? "Nova Entrada"
+              : forcedType === "despesa"
+              ? "Nova Despesa"
+              : "Novo registro"}
+          </DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-2">
-          <div className="grid gap-2">
-            <Label>Tipo</Label>
-            <Select value={type} onValueChange={(v) => { setType(v as any); setCategoryId(undefined); }}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="entrada">Entrada</SelectItem>
-                <SelectItem value="despesa">Despesa</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          {!forcedType && (
+            <div className="grid gap-2">
+              <Label>Tipo</Label>
+              <Select value={type} onValueChange={(v) => { setType(v as any); setCategoryId(undefined); }}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="entrada">Entrada</SelectItem>
+                  <SelectItem value="despesa">Despesa</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
           <div className="grid gap-2">
             <Label>Data</Label>
             <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
