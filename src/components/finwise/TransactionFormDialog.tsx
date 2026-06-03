@@ -13,11 +13,12 @@ type Props = {
   open: boolean;
   onOpenChange: (o: boolean) => void;
   initial?: Transaction | null;
+  forcedType?: "entrada" | "despesa";
 };
 
-export function TransactionFormDialog({ open, onOpenChange, initial }: Props) {
+export function TransactionFormDialog({ open, onOpenChange, initial, forcedType }: Props) {
   const { categories, addTransaction, updateTransaction } = useFinwise();
-  const [type, setType] = useState<"entrada" | "despesa">("despesa");
+  const [type, setType] = useState<"entrada" | "despesa">(forcedType ?? "despesa");
   const [date, setDate] = useState(todayISO());
   const [categoryId, setCategoryId] = useState<string | undefined>();
   const [description, setDescription] = useState("");
@@ -32,14 +33,14 @@ export function TransactionFormDialog({ open, onOpenChange, initial }: Props) {
         setDescription(initial.description);
         setAmount(String(initial.amount));
       } else {
-        setType("despesa");
+        setType(forcedType ?? "despesa");
         setDate(todayISO());
         setCategoryId(undefined);
         setDescription("");
         setAmount("");
       }
     }
-  }, [open, initial]);
+  }, [open, initial, forcedType]);
 
   const filteredCats = categories.filter((c) => c.kind === type);
 
@@ -73,19 +74,29 @@ export function TransactionFormDialog({ open, onOpenChange, initial }: Props) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{initial ? "Editar registro" : "Novo registro"}</DialogTitle>
+          <DialogTitle>
+            {initial
+              ? "Editar registro"
+              : forcedType === "entrada"
+              ? "Nova Entrada"
+              : forcedType === "despesa"
+              ? "Nova Despesa"
+              : "Novo registro"}
+          </DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-2">
-          <div className="grid gap-2">
-            <Label>Tipo</Label>
-            <Select value={type} onValueChange={(v) => { setType(v as any); setCategoryId(undefined); }}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="entrada">Entrada</SelectItem>
-                <SelectItem value="despesa">Despesa</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          {!forcedType && (
+            <div className="grid gap-2">
+              <Label>Tipo</Label>
+              <Select value={type} onValueChange={(v) => { setType(v as any); setCategoryId(undefined); }}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="entrada">Entrada</SelectItem>
+                  <SelectItem value="despesa">Despesa</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
           <div className="grid gap-2">
             <Label>Data</Label>
             <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />

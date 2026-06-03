@@ -31,6 +31,7 @@ function Registros() {
   const { transactions, categories, filters, setFilters, deleteTransaction } = useFinwise();
   const [page, setPage] = useState(1);
   const [openForm, setOpenForm] = useState(false);
+  const [formType, setFormType] = useState<"entrada" | "despesa" | undefined>(undefined);
   const [editing, setEditing] = useState<Transaction | null>(null);
   const [viewing, setViewing] = useState<Transaction | null>(null);
   const [confirmDel, setConfirmDel] = useState<Transaction | null>(null);
@@ -42,7 +43,7 @@ function Registros() {
       const tag = (e.target as HTMLElement)?.tagName;
       if (tag === "INPUT" || tag === "TEXTAREA") return;
       if (e.key === "/") { e.preventDefault(); searchRef.current?.focus(); }
-      else if (e.key === "n") { setEditing(null); setOpenForm(true); }
+      else if (e.key === "n") { setEditing(null); setFormType(undefined); setOpenForm(true); }
       else if (e.key === "1") navigate({ to: "/" });
       else if (e.key === "2") navigate({ to: "/registros" });
       else if (e.key === "3") navigate({ to: "/perfil" });
@@ -78,9 +79,22 @@ function Registros() {
           <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">Meus Registros</h1>
           <p className="text-sm text-muted-foreground">Gerencie suas entradas e despesas</p>
         </div>
-        <Button onClick={() => { setEditing(null); setOpenForm(true); }} className="w-full sm:w-auto">
-          <Plus className="h-4 w-4" /> Novo Registro
-        </Button>
+        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+          <Button
+            onClick={() => { setEditing(null); setFormType("entrada"); setOpenForm(true); }}
+            className="w-full bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/25 sm:w-auto"
+            variant="secondary"
+          >
+            <ArrowUpCircle className="h-4 w-4" /> Nova Entrada
+          </Button>
+          <Button
+            onClick={() => { setEditing(null); setFormType("despesa"); setOpenForm(true); }}
+            className="w-full bg-rose-500/15 text-rose-300 hover:bg-rose-500/25 sm:w-auto"
+            variant="secondary"
+          >
+            <ArrowDownCircle className="h-4 w-4" /> Nova Despesa
+          </Button>
+        </div>
       </header>
 
       <section className="mb-6 grid gap-4 sm:grid-cols-3">
@@ -162,7 +176,7 @@ function Registros() {
               <div className="flex flex-col items-center gap-3 p-12 text-center">
                 <div className="text-base font-medium">Nenhum registro encontrado</div>
                 <p className="text-sm text-muted-foreground">Comece adicionando seu primeiro lançamento.</p>
-                <Button onClick={() => { setEditing(null); setOpenForm(true); }}>
+                <Button onClick={() => { setEditing(null); setFormType(undefined); setOpenForm(true); }}>
                   <Plus className="h-4 w-4" /> Adicionar primeiro registro
                 </Button>
               </div>
@@ -196,7 +210,7 @@ function Registros() {
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-1">
                             <Button size="icon" variant="ghost" onClick={() => setViewing(t)}><Eye className="h-4 w-4" /></Button>
-                            <Button size="icon" variant="ghost" onClick={() => { setEditing(t); setOpenForm(true); }}><Pencil className="h-4 w-4" /></Button>
+                            <Button size="icon" variant="ghost" onClick={() => { setEditing(t); setFormType(undefined); setOpenForm(true); }}><Pencil className="h-4 w-4" /></Button>
                             <Button size="icon" variant="ghost" onClick={() => setConfirmDel(t)}><Trash2 className="h-4 w-4 text-rose-400" /></Button>
                           </div>
                         </TableCell>
@@ -220,7 +234,7 @@ function Registros() {
         </div>
       )}
 
-      <TransactionFormDialog open={openForm} onOpenChange={(o) => { setOpenForm(o); if (!o) setEditing(null); }} initial={editing} />
+      <TransactionFormDialog open={openForm} onOpenChange={(o) => { setOpenForm(o); if (!o) { setEditing(null); setFormType(undefined); } }} initial={editing} forcedType={editing ? undefined : formType} />
 
       <Dialog open={!!viewing} onOpenChange={(o) => !o && setViewing(null)}>
         <DialogContent>
