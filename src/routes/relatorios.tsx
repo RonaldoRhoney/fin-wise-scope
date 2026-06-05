@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/relatorios")({
-  head: () => ({ meta: [{ title: "Relatórios — FinWise" }] }),
+  head: () => ({ meta: [{ title: "Relatórios — Controle Financeiro" }] }),
   component: Relatorios,
 });
 

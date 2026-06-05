@@ -41,7 +41,7 @@ export const SEED_TRANSACTIONS: Transaction[] = [
 ];
 
 export const DEFAULT_PROFILE = {
-  name: "Usuário FinWise",
+  name: "Usuário Controle Financeiro",
   email: "user@finwise.app",
   currency: "BRL",
   locale: "pt-BR",

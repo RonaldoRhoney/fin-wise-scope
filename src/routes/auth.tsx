@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/auth")({
-  head: () => ({ meta: [{ title: "Entrar — FinWise" }] }),
+  head: () => ({ meta: [{ title: "Entrar — Controle Financeiro" }] }),
   component: AuthPage,
 });
 
@@ -97,8 +97,8 @@ function AuthPage() {
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl text-2xl font-semibold text-primary-foreground" style={{ background: "var(--gradient-primary)", boxShadow: "var(--shadow-glow)" }}>
             $
           </div>
-          <CardTitle className="text-center text-2xl tracking-tight">FinWise</CardTitle>
-          <p className="text-center text-sm text-muted-foreground">Controle suas finanças com elegância</p>
+          <CardTitle className="text-center text-2xl tracking-tight">Controle Financeiro</CardTitle>
+          <p className="text-center text-sm text-muted-foreground">Controle suas finanças com inteligência</p>
         </CardHeader>
         <CardContent>
           <div className="grid gap-2 pb-4">

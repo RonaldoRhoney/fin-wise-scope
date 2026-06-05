@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/reset-password")({
-  head: () => ({ meta: [{ title: "Nova senha — FinWise" }] }),
+  head: () => ({ meta: [{ title: "Nova senha — Controle Financeiro" }] }),
   component: ResetPage,
 });
 

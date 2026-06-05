@@ -16,8 +16,8 @@ function NavContent({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <div className="flex h-full flex-col p-4">
       <div className="mb-8 px-2">
-        <div className="text-xl font-semibold tracking-tight">FinWise</div>
-        <div className="text-xs text-muted-foreground">Controle financeiro</div>
+        <div className="text-xl font-semibold tracking-tight">Controle Financeiro</div>
+        <div className="text-xs text-muted-foreground">Controle suas finanças com inteligência</div>
       </div>
       <nav className="flex flex-1 flex-col gap-1">
         {links.map((l) => {
@@ -68,7 +68,7 @@ export function MobileTopBar() {
   const [open, setOpen] = useState(false);
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border/60 bg-sidebar/80 px-4 backdrop-blur lg:hidden">
-      <div className="text-base font-semibold tracking-tight">FinWise</div>
+      <div className="text-base font-semibold tracking-tight">Controle Financeiro</div>
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
           <Button size="icon" variant="ghost" aria-label="Abrir menu">

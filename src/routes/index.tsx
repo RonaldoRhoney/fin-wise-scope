@@ -22,7 +22,7 @@ import {
 import { TransactionFormDialog } from "@/components/finwise/TransactionFormDialog";
 
 export const Route = createFileRoute("/")({
-  head: () => ({ meta: [{ title: "Dashboard — FinWise" }] }),
+  head: () => ({ meta: [{ title: "Dashboard — Controle Financeiro" }] }),
   component: Dashboard,
 });
 

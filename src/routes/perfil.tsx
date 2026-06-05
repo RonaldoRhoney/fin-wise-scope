@@ -9,7 +9,7 @@ import { LogOut, Save, Download, Upload } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/perfil")({
-  head: () => ({ meta: [{ title: "Meu Perfil — FinWise" }] }),
+  head: () => ({ meta: [{ title: "Meu Perfil — Controle Financeiro" }] }),
   component: Perfil,
 });
 
