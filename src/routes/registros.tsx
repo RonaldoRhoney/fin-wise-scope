@@ -21,6 +21,7 @@ import {
 import { Eye, Pencil, Plus, Search, Trash2, ArrowUpCircle, ArrowDownCircle, Wallet, History } from "lucide-react";
 import { TransactionFormDialog } from "@/components/finwise/TransactionFormDialog";
 import { toast } from "sonner";
+import { toUserMessage } from "@/lib/finwise/errors";
 
 export const Route = createFileRoute("/registros")({
   head: () => ({ meta: [{ title: "Meus Registros — Controle Financeiro" }] }),
@@ -266,8 +267,8 @@ function Registros() {
                   try {
                     await deleteTransaction(confirmDel.id);
                     toast.success("Registro removido.");
-                  } catch (err: any) {
-                    toast.error(err.message ?? "Falha ao remover");
+                  } catch (err) {
+                    toast.error(toUserMessage(err, "Falha ao remover"));
                   }
                 }
                 setConfirmDel(null);

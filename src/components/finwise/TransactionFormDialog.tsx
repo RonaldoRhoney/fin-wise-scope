@@ -8,6 +8,7 @@ import { useFinwise } from "@/lib/finwise/store";
 import { brl, todayISO } from "@/lib/finwise/format";
 import type { Transaction } from "@/lib/finwise/types";
 import { toast } from "sonner";
+import { toUserMessage } from "@/lib/finwise/errors";
 
 type Props = {
   open: boolean;
@@ -65,8 +66,8 @@ export function TransactionFormDialog({ open, onOpenChange, initial, forcedType 
         toast.success("Registro criado com sucesso.");
       }
       onOpenChange(false);
-    } catch (err: any) {
-      toast.error(err.message ?? "Falha ao salvar");
+    } catch (err) {
+      toast.error(toUserMessage(err, "Falha ao salvar"));
     }
   };
 

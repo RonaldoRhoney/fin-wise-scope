@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LogOut, Save, Download, Upload } from "lucide-react";
 import { toast } from "sonner";
+import { toUserMessage } from "@/lib/finwise/errors";
 
 export const Route = createFileRoute("/perfil")({
   head: () => ({ meta: [{ title: "Meu Perfil — Controle Financeiro" }] }),
@@ -45,8 +46,8 @@ function Perfil() {
         const n = await importJSON(String(reader.result));
         toast.success(`${n} registro(s) importado(s).`);
         await refresh();
-      } catch (err: any) {
-        toast.error(err.message ?? "Falha ao importar");
+      } catch (err) {
+        toast.error(toUserMessage(err, "Falha ao importar"));
       }
     };
     reader.readAsText(file);

@@ -1,8 +1,22 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import type { Session } from "@supabase/supabase-js";
 import type { Category, Filters, Profile, Transaction } from "./types";
 import { SEED_CATEGORIES } from "./seed";
+
+const MAX_IMPORT_ROWS = 500;
+const ImportTxSchema = z.object({
+  type: z.enum(["entrada", "despesa"]),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data inválida"),
+  description: z.string().trim().max(500, "Descrição muito longa").default(""),
+  categoryId: z.string().trim().max(64).optional(),
+  amount: z.number().finite().positive("Valor inválido").max(1_000_000_000),
+});
+const ImportPayloadSchema = z.object({
+  transactions: z.array(ImportTxSchema).max(MAX_IMPORT_ROWS, `Limite de ${MAX_IMPORT_ROWS} registros por importação`),
+});
+
 
 type StoreCtx = {
   loading: boolean;
@@ -152,8 +166,13 @@ export function FinwiseProvider({ children }: { children: ReactNode }) {
 
   const importJSON: StoreCtx["importJSON"] = async (raw) => {
     if (!profile) throw new Error("Sem perfil");
-    const parsed = JSON.parse(raw) as { transactions?: Transaction[] };
-    const list = parsed.transactions ?? [];
+    let json: unknown;
+    try { json = JSON.parse(raw); } catch { throw new Error("Arquivo JSON inválido"); }
+    const result = ImportPayloadSchema.safeParse(json);
+    if (!result.success) {
+      throw new Error(result.error.issues[0]?.message ?? "Arquivo de importação inválido");
+    }
+    const list = result.data.transactions;
     if (!list.length) return 0;
     const rows = list.map((t) => ({
       user_id: profile.id,
