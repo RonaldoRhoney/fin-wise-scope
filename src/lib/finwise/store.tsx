@@ -112,8 +112,52 @@ export function FinwiseProvider({ children }: { children: ReactNode }) {
     return () => sub.subscription.unsubscribe();
   }, [loadProfileAndData]);
 
+  const archivePreviousMonths = useCallback(async (uid: string) => {
+    const now = new Date();
+    const cy = now.getFullYear();
+    const cm = now.getMonth() + 1;
+    const { data: rows } = await supabase.from("transactions").select("*");
+    const all = ((rows as DbRow[] | null) ?? []);
+    const past = all.filter((r) => {
+      const [y, m] = r.date.split("-").map(Number);
+      return y < cy || (y === cy && m < cm);
+    });
+    if (!past.length) return;
+    const groups = new Map<string, DbRow[]>();
+    for (const r of past) {
+      const key = r.date.slice(0, 7);
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key)!.push(r);
+    }
+    for (const [key, list] of groups) {
+      const [y, m] = key.split("-").map(Number);
+      const txs = list.map(rowToTx);
+      const totalIn = txs.filter((t) => t.type === "entrada").reduce((s, t) => s + t.amount, 0);
+      const totalOut = txs.filter((t) => t.type === "despesa").reduce((s, t) => s + t.amount, 0);
+      const summary = { totalIn, totalOut, balance: totalIn - totalOut, count: txs.length };
+      const { data: existing } = await supabase
+        .from("monthly_reports")
+        .select("id,transactions")
+        .eq("auth_user_id", uid).eq("year", y).eq("month", m).maybeSingle();
+      if (existing) {
+        const merged = [...((existing.transactions as unknown as Transaction[]) ?? []), ...txs];
+        await supabase.from("monthly_reports").update({
+          transactions: merged as never,
+          summary: summary as never,
+        }).eq("id", existing.id);
+      } else {
+        await supabase.from("monthly_reports").insert({
+          auth_user_id: uid, year: y, month: m,
+          transactions: txs as never, summary: summary as never,
+        });
+      }
+    }
+    const ids = past.map((r) => r.id);
+    await supabase.from("transactions").delete().in("id", ids);
+  }, []);
+
   const addTransaction: StoreCtx["addTransaction"] = async (t) => {
-    if (!profile) throw new Error("Sem perfil");
+    if (!profile || !session?.user) throw new Error("Sem perfil");
     const { data, error } = await supabase
       .from("transactions")
       .insert({
@@ -127,8 +171,17 @@ export function FinwiseProvider({ children }: { children: ReactNode }) {
       .select()
       .single();
     if (error) throw error;
-    setTransactions((p) => [rowToTx(data as DbRow), ...p]);
+    const now = new Date();
+    const [y, m] = t.date.split("-").map(Number);
+    const isCurrent = y === now.getFullYear() && m === now.getMonth() + 1;
+    if (isCurrent) {
+      await archivePreviousMonths(session.user.id);
+      await loadProfileAndData(session.user.id);
+    } else {
+      setTransactions((p) => [rowToTx(data as DbRow), ...p]);
+    }
   };
+
 
   const updateTransaction: StoreCtx["updateTransaction"] = async (id, t) => {
     const { data, error } = await supabase

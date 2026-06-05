@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { BarChart3, LayoutDashboard, ListChecks, Menu, Settings, User } from "lucide-react";
+import { BarChart3, LayoutDashboard, ListChecks, Menu, MessageCircle, Settings, User } from "lucide-react";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ const links = [
   { to: "/registros", label: "Meus Registros", icon: ListChecks },
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
   { to: "/relatorios", label: "Relatórios", icon: BarChart3 },
+  { to: "/feedback", label: "Feedback", icon: MessageCircle },
   { to: "/configuracoes", label: "Configurações", icon: Settings },
 ];
 
