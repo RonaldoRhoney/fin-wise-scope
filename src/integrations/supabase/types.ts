@@ -14,6 +14,86 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_feedback: {
+        Row: {
+          auth_user_id: string
+          author_name: string
+          content: string
+          created_at: string
+          id: number
+        }
+        Insert: {
+          auth_user_id: string
+          author_name?: string
+          content: string
+          created_at?: string
+          id?: never
+        }
+        Update: {
+          auth_user_id?: string
+          author_name?: string
+          content?: string
+          created_at?: string
+          id?: never
+        }
+        Relationships: []
+      }
+      feedback_likes: {
+        Row: {
+          auth_user_id: string
+          created_at: string
+          feedback_id: number
+        }
+        Insert: {
+          auth_user_id: string
+          created_at?: string
+          feedback_id: number
+        }
+        Update: {
+          auth_user_id?: string
+          created_at?: string
+          feedback_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feedback_likes_feedback_id_fkey"
+            columns: ["feedback_id"]
+            isOneToOne: false
+            referencedRelation: "app_feedback"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      monthly_reports: {
+        Row: {
+          auth_user_id: string
+          created_at: string
+          id: number
+          month: number
+          summary: Json
+          transactions: Json
+          year: number
+        }
+        Insert: {
+          auth_user_id: string
+          created_at?: string
+          id?: never
+          month: number
+          summary?: Json
+          transactions?: Json
+          year: number
+        }
+        Update: {
+          auth_user_id?: string
+          created_at?: string
+          id?: never
+          month?: number
+          summary?: Json
+          transactions?: Json
+          year?: number
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           auth_user_id: string
