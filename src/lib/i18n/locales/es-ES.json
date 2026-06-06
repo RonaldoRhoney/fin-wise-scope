@@ -9,6 +9,7 @@
     "dashboard": "Panel",
     "relatorios": "Informes",
     "feedback": "Opiniones",
+    "tips": "TipsMoney",
     "perfil": "Mi Perfil",
     "configuracoes": "Ajustes",
     "menu": "Abrir menú"
@@ -256,5 +257,23 @@
     "notFound": "Registro no encontrado.",
     "tooMany": "Demasiados intentos. Espera un momento.",
     "generic": "Algo salió mal. Inténtalo de nuevo."
+  },
+  "tips": {
+    "title": "TipsMoney",
+    "subtitle": "Tu asistente financiero con IA",
+    "welcome": "¡Hola! Soy **TipsMoney**, tu asistente financiero. Analizo tus ingresos y gastos para sugerirte ahorro, organización e inversión. Pregúntame o elige una sugerencia. 💸",
+    "tryAsking": "Prueba a preguntar:",
+    "inputPlaceholder": "Pregunta sobre tus finanzas…",
+    "suggestions": {
+      "s1": "¿Cómo voy este mes?",
+      "s2": "¿Dónde puedo ahorrar?",
+      "s3": "Ideas de inversión para mi perfil",
+      "s4": "¿Cómo crear un fondo de emergencia?"
+    },
+    "errors": {
+      "rate": "Demasiadas preguntas. Inténtalo en unos instantes.",
+      "credits": "Créditos de IA agotados. Añade créditos al workspace.",
+      "generic": "No pude responder ahora. Inténtalo de nuevo."
+    }
   }
 }

@@ -9,6 +9,7 @@
     "dashboard": "Dashboard",
     "relatorios": "Reports",
     "feedback": "Feedback",
+    "tips": "TipsMoney",
     "perfil": "My Profile",
     "configuracoes": "Settings",
     "menu": "Open menu"
@@ -256,5 +257,23 @@
     "notFound": "Record not found.",
     "tooMany": "Too many attempts. Please wait a moment.",
     "generic": "Something went wrong. Please try again."
+  },
+  "tips": {
+    "title": "TipsMoney",
+    "subtitle": "Your AI-powered financial assistant",
+    "welcome": "Hi! I'm **TipsMoney**, your financial assistant. I look at your income and expenses to suggest savings, organization and investment tips. Ask me anything or pick a suggestion below. 💸",
+    "tryAsking": "Try asking:",
+    "inputPlaceholder": "Ask about your finances…",
+    "suggestions": {
+      "s1": "How am I doing this month?",
+      "s2": "Where can I save money?",
+      "s3": "Investment ideas for my profile",
+      "s4": "How do I build an emergency fund?"
+    },
+    "errors": {
+      "rate": "Too many questions in a short time. Try again shortly.",
+      "credits": "AI credits exhausted. Add credits to your workspace.",
+      "generic": "I couldn't answer right now. Please try again."
+    }
   }
 }
