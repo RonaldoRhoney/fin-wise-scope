@@ -30,6 +30,7 @@ type StoreCtx = {
   updateTransaction: (id: string, t: Omit<Transaction, "id">) => Promise<void>;
   deleteTransaction: (id: string) => Promise<void>;
   updateProfileName: (name: string) => Promise<void>;
+  updateProfileAvatar: (avatarUrl: string | null) => Promise<void>;
   signOut: () => Promise<void>;
   refresh: () => Promise<void>;
   exportJSON: () => string;
@@ -76,11 +77,11 @@ export function FinwiseProvider({ children }: { children: ReactNode }) {
   const loadProfileAndData = useCallback(async (uid: string) => {
     const { data: prof } = await supabase
       .from("profiles")
-      .select("id,name,email")
+      .select("id,name,email,avatar_url")
       .eq("auth_user_id", uid)
       .maybeSingle();
     if (prof) {
-      setProfile({ id: prof.id, name: prof.name ?? "", email: prof.email });
+      setProfile({ id: prof.id, name: prof.name ?? "", email: prof.email, avatarUrl: (prof as { avatar_url?: string | null }).avatar_url ?? null });
       const { data: tx } = await supabase
         .from("transactions")
         .select("*")
