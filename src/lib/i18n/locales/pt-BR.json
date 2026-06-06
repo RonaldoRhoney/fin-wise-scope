@@ -5,7 +5,7 @@
     "shareText": "Conheça o Controle Financeiro — controle suas finanças com inteligência:"
   },
   "nav": {
-    "registros": "Meus Registros",
+    "registros": "Transações",
     "dashboard": "Dashboard",
     "relatorios": "Relatórios",
     "feedback": "Feedback",
@@ -61,7 +61,7 @@
     }
   },
   "registros": {
-    "title": "Meus Registros",
+    "title": "Transações",
     "subtitle": "Gerencie suas entradas e despesas",
     "newIncome": "Nova Entrada",
     "newExpense": "Nova Despesa",
