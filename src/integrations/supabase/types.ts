@@ -97,6 +97,7 @@ export type Database = {
       profiles: {
         Row: {
           auth_user_id: string
+          avatar_url: string | null
           created_at: string
           email: string
           id: number
@@ -104,6 +105,7 @@ export type Database = {
         }
         Insert: {
           auth_user_id: string
+          avatar_url?: string | null
           created_at?: string
           email: string
           id?: never
@@ -111,6 +113,7 @@ export type Database = {
         }
         Update: {
           auth_user_id?: string
+          avatar_url?: string | null
           created_at?: string
           email?: string
           id?: never
