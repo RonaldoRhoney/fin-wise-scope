@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useFinwise } from "@/lib/finwise/store";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -10,17 +11,18 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Camera, Download, KeyRound, LogOut, Mail, Save, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { toUserMessage } from "@/lib/finwise/errors";
+import i18n from "@/lib/i18n";
 
 export const Route = createFileRoute("/perfil")({
-  head: () => ({ meta: [{ title: "Meu Perfil — Controle Financeiro" }] }),
+  head: () => ({ meta: [{ title: "Controle Financeiro" }] }),
   component: Perfil,
 });
 
-const MAX_AVATAR_BYTES = 2 * 1024 * 1024; // 2MB pré-compactação
+const MAX_AVATAR_BYTES = 2 * 1024 * 1024;
 const TARGET_DIM = 256;
 
 async function fileToCompressedDataUrl(file: File): Promise<string> {
-  if (file.size > MAX_AVATAR_BYTES) throw new Error("Imagem muito grande (máx. 2MB)");
+  if (file.size > MAX_AVATAR_BYTES) throw new Error(i18n.t("perfil.tooLargeImg"));
   const url = URL.createObjectURL(file);
   try {
     const img = await new Promise<HTMLImageElement>((res, rej) => {
@@ -43,6 +45,7 @@ async function fileToCompressedDataUrl(file: File): Promise<string> {
 }
 
 function Perfil() {
+  const { t } = useTranslation();
   const { profile, session, updateProfileName, updateProfileAvatar, signOut, exportJSON, importJSON, refresh } = useFinwise();
   const navigate = useNavigate();
   const [name, setName] = useState("");
@@ -51,13 +54,10 @@ function Perfil() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const avatarInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (!session) navigate({ to: "/auth" });
-  }, [session, navigate]);
-
+  useEffect(() => { if (!session) navigate({ to: "/auth" }); }, [session, navigate]);
   useEffect(() => { if (profile) setName(profile.name); }, [profile]);
 
-  if (!profile) return <div className="p-8 text-sm text-muted-foreground">Carregando…</div>;
+  if (!profile) return <div className="p-8 text-sm text-muted-foreground">{t("common.loading")}</div>;
 
   const handleExport = () => {
     const blob = new Blob([exportJSON()], { type: "application/json" });
@@ -76,10 +76,10 @@ function Perfil() {
     reader.onload = async () => {
       try {
         const n = await importJSON(String(reader.result));
-        toast.success(`${n} registro(s) importado(s).`);
+        toast.success(t("perfil.imported", { count: n }));
         await refresh();
       } catch (err) {
-        toast.error(toUserMessage(err, "Falha ao importar"));
+        toast.error(toUserMessage(err, t("perfil.importFail")));
       }
     };
     reader.readAsText(file);
@@ -93,9 +93,9 @@ function Perfil() {
     try {
       const dataUrl = await fileToCompressedDataUrl(file);
       await updateProfileAvatar(dataUrl);
-      toast.success("Foto atualizada.");
+      toast.success(t("perfil.photoUpdated"));
     } catch (err) {
-      toast.error(toUserMessage(err, "Falha ao atualizar foto"));
+      toast.error(toUserMessage(err, t("perfil.photoUpdateFail")));
     } finally {
       setBusy(false);
       e.target.value = "";
@@ -106,9 +106,9 @@ function Perfil() {
     setBusy(true);
     try {
       await updateProfileAvatar(null);
-      toast.success("Foto removida.");
+      toast.success(t("perfil.photoRemoved"));
     } catch (err) {
-      toast.error(toUserMessage(err, "Falha ao remover foto"));
+      toast.error(toUserMessage(err, t("perfil.photoRemoveFail")));
     } finally {
       setBusy(false);
     }
@@ -116,14 +116,14 @@ function Perfil() {
 
   const changePassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (newPassword.length < 6) return toast.error("Mínimo de 6 caracteres");
-    if (newPassword !== confirmPassword) return toast.error("As senhas não coincidem");
+    if (newPassword.length < 6) return toast.error(t("perfil.minPass"));
+    if (newPassword !== confirmPassword) return toast.error(t("perfil.passMismatch"));
     setBusy(true);
     const { error } = await supabase.auth.updateUser({ password: newPassword });
     setBusy(false);
     if (error) return toast.error(error.message);
     setNewPassword(""); setConfirmPassword("");
-    toast.success("Senha alterada com sucesso.");
+    toast.success(t("perfil.passwordChanged"));
   };
 
   const sendResetEmail = async () => {
@@ -133,7 +133,7 @@ function Perfil() {
     });
     setBusy(false);
     if (error) return toast.error(error.message);
-    toast.success("Enviamos um link de recuperação para o seu email.");
+    toast.success(t("perfil.resetLinkSent"));
   };
 
   const initials = (profile.name || profile.email).slice(0, 2).toUpperCase();
@@ -141,15 +141,15 @@ function Perfil() {
   return (
     <div className="mx-auto max-w-4xl p-4 sm:p-6 lg:p-8">
       <header className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight">Meu Perfil</h1>
-        <p className="text-sm text-muted-foreground">Gerencie suas informações e segurança</p>
+        <h1 className="text-2xl font-semibold tracking-tight">{t("perfil.title")}</h1>
+        <p className="text-sm text-muted-foreground">{t("perfil.subtitle")}</p>
       </header>
 
       <div className="grid gap-4">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Foto e identidade</CardTitle>
-            <CardDescription>Personalize como você aparece no app</CardDescription>
+            <CardTitle className="text-base">{t("perfil.identityTitle")}</CardTitle>
+            <CardDescription>{t("perfil.identityDesc")}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
@@ -162,25 +162,19 @@ function Perfil() {
                   type="button"
                   onClick={() => avatarInputRef.current?.click()}
                   className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-md transition hover:scale-105"
-                  aria-label="Trocar foto"
+                  aria-label={t("perfil.changePhoto")}
                 >
                   <Camera className="h-3.5 w-3.5" />
                 </button>
-                <input
-                  ref={avatarInputRef}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleAvatar}
-                />
+                <input ref={avatarInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatar} />
               </div>
               <div className="flex flex-wrap gap-2">
                 <Button variant="outline" size="sm" disabled={busy} onClick={() => avatarInputRef.current?.click()}>
-                  <Camera className="h-4 w-4" /> Trocar foto
+                  <Camera className="h-4 w-4" /> {t("perfil.changePhoto")}
                 </Button>
                 {profile.avatarUrl && (
                   <Button variant="outline" size="sm" disabled={busy} onClick={removeAvatar}>
-                    <Trash2 className="h-4 w-4" /> Remover
+                    <Trash2 className="h-4 w-4" /> {t("perfil.removePhoto")}
                   </Button>
                 )}
               </div>
@@ -188,11 +182,11 @@ function Perfil() {
 
             <div className="mt-6 grid gap-4">
               <div className="grid gap-2">
-                <Label>Email</Label>
+                <Label>{t("perfil.email")}</Label>
                 <Input value={profile.email} disabled />
               </div>
               <div className="grid gap-2">
-                <Label>Nome</Label>
+                <Label>{t("perfil.name")}</Label>
                 <Input value={name} maxLength={200} onChange={(e) => setName(e.target.value)} />
               </div>
               <div>
@@ -201,13 +195,13 @@ function Perfil() {
                   onClick={async () => {
                     try {
                       await updateProfileName(name);
-                      toast.success("Perfil atualizado.");
+                      toast.success(t("perfil.profileUpdated"));
                     } catch (err) {
-                      toast.error(toUserMessage(err, "Falha ao salvar perfil"));
+                      toast.error(toUserMessage(err, t("perfil.profileSaveFail")));
                     }
                   }}
                 >
-                  <Save className="h-4 w-4" /> Salvar alterações
+                  <Save className="h-4 w-4" /> {t("common.saveChanges")}
                 </Button>
               </div>
             </div>
@@ -217,26 +211,26 @@ function Perfil() {
         <Card id="senha">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
-              <KeyRound className="h-4 w-4 text-primary" /> Segurança
+              <KeyRound className="h-4 w-4 text-primary" /> {t("perfil.securityTitle")}
             </CardTitle>
-            <CardDescription>Atualize sua senha ou recupere o acesso</CardDescription>
+            <CardDescription>{t("perfil.securityDesc")}</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={changePassword} className="grid gap-3">
               <div className="grid gap-2">
-                <Label>Nova senha</Label>
-                <Input type="password" minLength={6} value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Mínimo de 6 caracteres" />
+                <Label>{t("perfil.newPassword")}</Label>
+                <Input type="password" minLength={6} value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder={t("perfil.minPass")} />
               </div>
               <div className="grid gap-2">
-                <Label>Confirmar senha</Label>
+                <Label>{t("perfil.confirmPassword")}</Label>
                 <Input type="password" minLength={6} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
               </div>
               <div className="flex flex-wrap gap-2">
                 <Button type="submit" disabled={busy || !newPassword}>
-                  <KeyRound className="h-4 w-4" /> Alterar senha
+                  <KeyRound className="h-4 w-4" /> {t("perfil.changePassword")}
                 </Button>
                 <Button type="button" variant="outline" disabled={busy} onClick={sendResetEmail}>
-                  <Mail className="h-4 w-4" /> Enviar link por email
+                  <Mail className="h-4 w-4" /> {t("perfil.sendResetLink")}
                 </Button>
               </div>
             </form>
@@ -245,22 +239,19 @@ function Perfil() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Dados</CardTitle>
-            <CardDescription>Exporte ou importe seus registros</CardDescription>
+            <CardTitle className="text-base">{t("perfil.dataTitle")}</CardTitle>
+            <CardDescription>{t("perfil.dataDesc")}</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-wrap gap-2">
-            <Button variant="outline" onClick={handleExport}><Download className="h-4 w-4" /> Exportar JSON</Button>
+            <Button variant="outline" onClick={handleExport}><Download className="h-4 w-4" /> {t("perfil.exportJson")}</Button>
             <label className="inline-flex">
               <input type="file" accept="application/json" onChange={handleImport} className="hidden" />
               <span className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent">
-                <Upload className="h-4 w-4" /> Importar JSON
+                <Upload className="h-4 w-4" /> {t("perfil.importJson")}
               </span>
             </label>
-            <Button
-              variant="destructive"
-              onClick={async () => { await signOut(); navigate({ to: "/auth" }); }}
-            >
-              <LogOut className="h-4 w-4" /> Sair
+            <Button variant="destructive" onClick={async () => { await signOut(); navigate({ to: "/auth" }); }}>
+              <LogOut className="h-4 w-4" /> {t("perfil.signOut")}
             </Button>
           </CardContent>
         </Card>

@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useFinwise } from "@/lib/finwise/store";
 import type { Transaction } from "@/lib/finwise/types";
 import { brl, formatDate } from "@/lib/finwise/format";
@@ -7,28 +8,25 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import {
-  Dialog, DialogContent, DialogHeader, DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Eye, Pencil, Plus, Search, Trash2, ArrowUpCircle, ArrowDownCircle, Wallet, History } from "lucide-react";
 import { TransactionFormDialog } from "@/components/finwise/TransactionFormDialog";
 import { toast } from "sonner";
 import { toUserMessage } from "@/lib/finwise/errors";
 
 export const Route = createFileRoute("/registros")({
-  head: () => ({ meta: [{ title: "Meus Registros — Controle Financeiro" }] }),
+  head: () => ({ meta: [{ title: "Controle Financeiro" }] }),
   component: Registros,
 });
 
 function Registros() {
+  const { t } = useTranslation();
   const { transactions, categories, filters, setFilters, deleteTransaction } = useFinwise();
   const [page, setPage] = useState(1);
   const [openForm, setOpenForm] = useState(false);
@@ -54,16 +52,16 @@ function Registros() {
   }, [navigate]);
 
   const filtered = useMemo(() => {
-    return transactions.filter((t) => {
-      if (filters.type !== "all" && t.type !== filters.type) return false;
-      if (filters.categoryId !== "all" && t.categoryId !== filters.categoryId) return false;
-      if (filters.search && !t.description.toLowerCase().includes(filters.search.toLowerCase())) return false;
+    return transactions.filter((tx) => {
+      if (filters.type !== "all" && tx.type !== filters.type) return false;
+      if (filters.categoryId !== "all" && tx.categoryId !== filters.categoryId) return false;
+      if (filters.search && !tx.description.toLowerCase().includes(filters.search.toLowerCase())) return false;
       return true;
     }).sort((a, b) => b.date.localeCompare(a.date));
   }, [transactions, filters]);
 
-  const totalIn = useMemo(() => filtered.filter((t) => t.type === "entrada").reduce((s, t) => s + t.amount, 0), [filtered]);
-  const totalOut = useMemo(() => filtered.filter((t) => t.type === "despesa").reduce((s, t) => s + t.amount, 0), [filtered]);
+  const totalIn = useMemo(() => filtered.filter((tx) => tx.type === "entrada").reduce((s, tx) => s + tx.amount, 0), [filtered]);
+  const totalOut = useMemo(() => filtered.filter((tx) => tx.type === "despesa").reduce((s, tx) => s + tx.amount, 0), [filtered]);
   const saldo = totalIn - totalOut;
 
   const PAGE_SIZE = 20;
@@ -77,8 +75,8 @@ function Registros() {
     <div className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
       <header className="mb-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">Meus Registros</h1>
-          <p className="text-sm text-muted-foreground">Gerencie suas entradas e despesas</p>
+          <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">{t("registros.title")}</h1>
+          <p className="text-sm text-muted-foreground">{t("registros.subtitle")}</p>
         </div>
         <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
           <Button
@@ -86,14 +84,14 @@ function Registros() {
             className="w-full bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/25 sm:w-auto"
             variant="secondary"
           >
-            <ArrowUpCircle className="h-4 w-4" /> Nova Entrada
+            <ArrowUpCircle className="h-4 w-4" /> {t("registros.newIncome")}
           </Button>
           <Button
             onClick={() => { setEditing(null); setFormType("despesa"); setOpenForm(true); }}
             className="w-full bg-rose-500/15 text-rose-300 hover:bg-rose-500/25 sm:w-auto"
             variant="secondary"
           >
-            <ArrowDownCircle className="h-4 w-4" /> Nova Despesa
+            <ArrowDownCircle className="h-4 w-4" /> {t("registros.newExpense")}
           </Button>
         </div>
       </header>
@@ -102,33 +100,33 @@ function Registros() {
         <Card className="transition-all hover:border-primary/40">
           <CardContent className="p-5">
             <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
-              <span>💰 Entradas</span>
+              <span>💰 {t("registros.income")}</span>
               <ArrowUpCircle className="h-4 w-4 text-emerald-400" />
             </div>
             <div className="text-2xl font-semibold tracking-tight text-emerald-400">{brl(totalIn)}</div>
-            <div className="mt-1 text-xs text-muted-foreground">{filtered.filter((t) => t.type === "entrada").length} registros</div>
+            <div className="mt-1 text-xs text-muted-foreground">{t("registros.recordsCount", { count: filtered.filter((tx) => tx.type === "entrada").length })}</div>
           </CardContent>
         </Card>
         <Card className="transition-all hover:border-primary/40">
           <CardContent className="p-5">
             <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
-              <span>💸 Despesas</span>
+              <span>💸 {t("registros.expense")}</span>
               <ArrowDownCircle className="h-4 w-4 text-rose-400" />
             </div>
             <div className="text-2xl font-semibold tracking-tight text-rose-400">{brl(totalOut)}</div>
-            <div className="mt-1 text-xs text-muted-foreground">{filtered.filter((t) => t.type === "despesa").length} registros</div>
+            <div className="mt-1 text-xs text-muted-foreground">{t("registros.recordsCount", { count: filtered.filter((tx) => tx.type === "despesa").length })}</div>
           </CardContent>
         </Card>
         <Card className="transition-all hover:border-primary/40">
           <CardContent className="p-5">
             <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
-              <span>Saldo</span>
+              <span>{t("registros.balance")}</span>
               <Wallet className="h-4 w-4 text-sky-400" />
             </div>
             <div className={`text-2xl font-semibold tracking-tight ${saldo >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
               {brl(saldo)}
             </div>
-            <div className="mt-1 text-xs text-muted-foreground">Balanço do período</div>
+            <div className="mt-1 text-xs text-muted-foreground">{t("registros.balancePeriod")}</div>
           </CardContent>
         </Card>
       </section>
@@ -136,7 +134,7 @@ function Registros() {
       <section>
         <div className="mb-4 flex items-center gap-2">
           <History className="h-5 w-5 text-muted-foreground" />
-          <h2 className="text-lg font-semibold tracking-tight">📋 Histórico</h2>
+          <h2 className="text-lg font-semibold tracking-tight">📋 {t("registros.history")}</h2>
         </div>
 
         <Card className="mb-4">
@@ -147,22 +145,22 @@ function Registros() {
                 ref={searchRef}
                 value={filters.search}
                 onChange={(e) => setFilters({ search: e.target.value })}
-                placeholder="Buscar por descrição… (atalho: /)"
+                placeholder={t("registros.searchPlaceholder")}
                 className="pl-9"
               />
             </div>
             <Select value={filters.type} onValueChange={(v) => setFilters({ type: v as any })}>
               <SelectTrigger className="w-full sm:w-[180px]"><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Todos os tipos</SelectItem>
-                <SelectItem value="entrada">Apenas entradas</SelectItem>
-                <SelectItem value="despesa">Apenas despesas</SelectItem>
+                <SelectItem value="all">{t("registros.allTypes")}</SelectItem>
+                <SelectItem value="entrada">{t("registros.onlyIncome")}</SelectItem>
+                <SelectItem value="despesa">{t("registros.onlyExpense")}</SelectItem>
               </SelectContent>
             </Select>
             <Select value={filters.categoryId} onValueChange={(v) => setFilters({ categoryId: v })}>
               <SelectTrigger className="w-full sm:w-[200px]"><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Todas categorias</SelectItem>
+                <SelectItem value="all">{t("registros.allCategories")}</SelectItem>
                 {categories.map((c) => (
                   <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
                 ))}
@@ -175,10 +173,10 @@ function Registros() {
           <CardContent className="p-0">
             {filtered.length === 0 ? (
               <div className="flex flex-col items-center gap-3 p-12 text-center">
-                <div className="text-base font-medium">Nenhum registro encontrado</div>
-                <p className="text-sm text-muted-foreground">Comece adicionando seu primeiro lançamento.</p>
+                <div className="text-base font-medium">{t("registros.empty")}</div>
+                <p className="text-sm text-muted-foreground">{t("registros.emptyHint")}</p>
                 <Button onClick={() => { setEditing(null); setFormType(undefined); setOpenForm(true); }}>
-                  <Plus className="h-4 w-4" /> Adicionar primeiro registro
+                  <Plus className="h-4 w-4" /> {t("registros.addFirst")}
                 </Button>
               </div>
             ) : (
@@ -186,33 +184,33 @@ function Registros() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Data</TableHead>
-                      <TableHead>Descrição</TableHead>
-                      <TableHead className="hidden md:table-cell">Categoria</TableHead>
-                      <TableHead>Tipo</TableHead>
-                      <TableHead className="text-right">Valor</TableHead>
-                      <TableHead className="w-[140px] text-right">Ações</TableHead>
+                      <TableHead>{t("registros.table.date")}</TableHead>
+                      <TableHead>{t("registros.table.description")}</TableHead>
+                      <TableHead className="hidden md:table-cell">{t("registros.table.category")}</TableHead>
+                      <TableHead>{t("registros.table.type")}</TableHead>
+                      <TableHead className="text-right">{t("registros.table.value")}</TableHead>
+                      <TableHead className="w-[140px] text-right">{t("common.actions")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {visible.map((t) => (
-                      <TableRow key={t.id}>
-                        <TableCell className="whitespace-nowrap text-sm">{formatDate(t.date)}</TableCell>
-                        <TableCell className="font-medium">{t.description}</TableCell>
-                        <TableCell className="hidden md:table-cell text-sm text-muted-foreground">{catName(t.categoryId)}</TableCell>
+                    {visible.map((tx) => (
+                      <TableRow key={tx.id}>
+                        <TableCell className="whitespace-nowrap text-sm">{formatDate(tx.date)}</TableCell>
+                        <TableCell className="font-medium">{tx.description}</TableCell>
+                        <TableCell className="hidden md:table-cell text-sm text-muted-foreground">{catName(tx.categoryId)}</TableCell>
                         <TableCell>
-                          <Badge variant={t.type === "entrada" ? "default" : "secondary"} className={t.type === "entrada" ? "bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/20" : "bg-rose-500/15 text-rose-300 hover:bg-rose-500/20"}>
-                            {t.type === "entrada" ? "Entrada" : "Despesa"}
+                          <Badge variant={tx.type === "entrada" ? "default" : "secondary"} className={tx.type === "entrada" ? "bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/20" : "bg-rose-500/15 text-rose-300 hover:bg-rose-500/20"}>
+                            {tx.type === "entrada" ? t("registros.typeIncome") : t("registros.typeExpense")}
                           </Badge>
                         </TableCell>
-                        <TableCell className={`whitespace-nowrap text-right font-medium ${t.type === "entrada" ? "text-emerald-400" : "text-rose-400"}`}>
-                          {t.type === "entrada" ? "+" : "−"} {brl(t.amount)}
+                        <TableCell className={`whitespace-nowrap text-right font-medium ${tx.type === "entrada" ? "text-emerald-400" : "text-rose-400"}`}>
+                          {tx.type === "entrada" ? "+" : "−"} {brl(tx.amount)}
                         </TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-1">
-                            <Button size="icon" variant="ghost" onClick={() => setViewing(t)}><Eye className="h-4 w-4" /></Button>
-                            <Button size="icon" variant="ghost" onClick={() => { setEditing(t); setFormType(undefined); setOpenForm(true); }}><Pencil className="h-4 w-4" /></Button>
-                            <Button size="icon" variant="ghost" onClick={() => setConfirmDel(t)}><Trash2 className="h-4 w-4 text-rose-400" /></Button>
+                            <Button size="icon" variant="ghost" onClick={() => setViewing(tx)} aria-label={t("common.view")}><Eye className="h-4 w-4" /></Button>
+                            <Button size="icon" variant="ghost" onClick={() => { setEditing(tx); setFormType(undefined); setOpenForm(true); }} aria-label={t("common.edit")}><Pencil className="h-4 w-4" /></Button>
+                            <Button size="icon" variant="ghost" onClick={() => setConfirmDel(tx)} aria-label={t("common.remove")}><Trash2 className="h-4 w-4 text-rose-400" /></Button>
                           </div>
                         </TableCell>
                       </TableRow>
@@ -227,10 +225,10 @@ function Registros() {
 
       {paginated && (
         <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
-          <span>Página {page} de {totalPages}</span>
+          <span>{t("common.page")} {page} {t("common.of")} {totalPages}</span>
           <div className="flex gap-2">
-            <Button size="sm" variant="outline" disabled={page <= 1} onClick={() => setPage(page - 1)}>Anterior</Button>
-            <Button size="sm" variant="outline" disabled={page >= totalPages} onClick={() => setPage(page + 1)}>Próxima</Button>
+            <Button size="sm" variant="outline" disabled={page <= 1} onClick={() => setPage(page - 1)}>{t("common.previous")}</Button>
+            <Button size="sm" variant="outline" disabled={page >= totalPages} onClick={() => setPage(page + 1)}>{t("common.next")}</Button>
           </div>
         </div>
       )}
@@ -239,14 +237,14 @@ function Registros() {
 
       <Dialog open={!!viewing} onOpenChange={(o) => !o && setViewing(null)}>
         <DialogContent>
-          <DialogHeader><DialogTitle>Detalhes do registro</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>{t("registros.details")}</DialogTitle></DialogHeader>
           {viewing && (
             <dl className="grid grid-cols-3 gap-3 text-sm">
-              <dt className="text-muted-foreground">Data</dt><dd className="col-span-2">{formatDate(viewing.date)}</dd>
-              <dt className="text-muted-foreground">Descrição</dt><dd className="col-span-2">{viewing.description}</dd>
-              <dt className="text-muted-foreground">Categoria</dt><dd className="col-span-2">{catName(viewing.categoryId)}</dd>
-              <dt className="text-muted-foreground">Tipo</dt><dd className="col-span-2 capitalize">{viewing.type}</dd>
-              <dt className="text-muted-foreground">Valor</dt><dd className="col-span-2 font-medium">{brl(viewing.amount)}</dd>
+              <dt className="text-muted-foreground">{t("registros.table.date")}</dt><dd className="col-span-2">{formatDate(viewing.date)}</dd>
+              <dt className="text-muted-foreground">{t("registros.table.description")}</dt><dd className="col-span-2">{viewing.description}</dd>
+              <dt className="text-muted-foreground">{t("registros.table.category")}</dt><dd className="col-span-2">{catName(viewing.categoryId)}</dd>
+              <dt className="text-muted-foreground">{t("registros.table.type")}</dt><dd className="col-span-2">{viewing.type === "entrada" ? t("registros.typeIncome") : t("registros.typeExpense")}</dd>
+              <dt className="text-muted-foreground">{t("registros.table.value")}</dt><dd className="col-span-2 font-medium">{brl(viewing.amount)}</dd>
             </dl>
           )}
         </DialogContent>
@@ -255,26 +253,26 @@ function Registros() {
       <AlertDialog open={!!confirmDel} onOpenChange={(o) => !o && setConfirmDel(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Remover registro?</AlertDialogTitle>
-            <AlertDialogDescription>Essa ação não pode ser desfeita.</AlertDialogDescription>
+            <AlertDialogTitle>{t("registros.removeQ")}</AlertDialogTitle>
+            <AlertDialogDescription>{t("registros.removeWarn")}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
             <AlertDialogAction
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               onClick={async () => {
                 if (confirmDel) {
                   try {
                     await deleteTransaction(confirmDel.id);
-                    toast.success("Registro removido.");
+                    toast.success(t("registros.removed"));
                   } catch (err) {
-                    toast.error(toUserMessage(err, "Falha ao remover"));
+                    toast.error(toUserMessage(err, t("feedback.removeFail")));
                   }
                 }
                 setConfirmDel(null);
               }}
             >
-              Remover
+              {t("common.remove")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
