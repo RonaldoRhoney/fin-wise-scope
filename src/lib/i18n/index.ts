@@ -26,8 +26,6 @@ if (!i18n.isInitialized) {
       fallbackLng: "pt-BR",
       supportedLngs: ["pt-BR", "en-US", "es-ES"],
       nonExplicitSupportedLngs: true,
-      load: "languageOnly",
-      initImmediate: false,
       interpolation: { escapeValue: false },
       detection: {
         order: ["localStorage", "navigator", "htmlTag"],
@@ -35,13 +33,8 @@ if (!i18n.isInitialized) {
         caches: ["localStorage"],
       },
       react: { useSuspense: false },
-    });
-}
-
-export function setLanguage(lang: LangCode) {
-  i18n.changeLanguage(lang);
-  try { localStorage.setItem("cf-lang", lang); } catch {}
-  if (typeof document !== "undefined") document.documentElement.lang = lang;
+      initImmediate: false,
+    } as any);
 }
 
 export default i18n;
