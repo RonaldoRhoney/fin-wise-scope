@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,6 +19,7 @@ type Props = {
 };
 
 export function TransactionFormDialog({ open, onOpenChange, initial, forcedType }: Props) {
+  const { t } = useTranslation();
   const { categories, addTransaction, updateTransaction } = useFinwise();
   const [type, setType] = useState<"entrada" | "despesa">(forcedType ?? "despesa");
   const [date, setDate] = useState(todayISO());
@@ -48,64 +50,59 @@ export function TransactionFormDialog({ open, onOpenChange, initial, forcedType 
   const submit = async () => {
     const value = parseFloat(amount.replace(",", "."));
     const errs: string[] = [];
-    if (!description.trim()) errs.push("Descrição é obrigatória");
-    if (!date) errs.push("Data inválida");
-    if (!value || value <= 0) errs.push("Valor deve ser maior que zero");
-    if (type === "despesa" && !categoryId) errs.push("Categoria obrigatória para despesas");
-    if (errs.length) {
-      errs.forEach((e) => toast.error(e));
-      return;
-    }
+    if (!description.trim()) errs.push(t("form.errors.desc"));
+    if (!date) errs.push(t("form.errors.date"));
+    if (!value || value <= 0) errs.push(t("form.errors.amount"));
+    if (type === "despesa" && !categoryId) errs.push(t("form.errors.category"));
+    if (errs.length) { errs.forEach((e) => toast.error(e)); return; }
     const payload = { type, date, description: description.trim(), categoryId, amount: value };
     try {
       if (initial) {
         await updateTransaction(initial.id, payload);
-        toast.success("Registro atualizado com sucesso.");
+        toast.success(t("form.updated"));
       } else {
         await addTransaction(payload);
-        toast.success("Registro criado com sucesso.");
+        toast.success(t("form.created"));
       }
       onOpenChange(false);
     } catch (err) {
-      toast.error(toUserMessage(err, "Falha ao salvar"));
+      toast.error(toUserMessage(err, t("form.saveFail")));
     }
   };
+
+  const title = initial
+    ? t("form.editRecord")
+    : forcedType === "entrada"
+    ? t("registros.newIncome")
+    : forcedType === "despesa"
+    ? t("registros.newExpense")
+    : t("form.newRecord");
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
-        <DialogHeader>
-          <DialogTitle>
-            {initial
-              ? "Editar registro"
-              : forcedType === "entrada"
-              ? "Nova Entrada"
-              : forcedType === "despesa"
-              ? "Nova Despesa"
-              : "Novo registro"}
-          </DialogTitle>
-        </DialogHeader>
+        <DialogHeader><DialogTitle>{title}</DialogTitle></DialogHeader>
         <div className="grid gap-4 py-2">
           {!forcedType && (
             <div className="grid gap-2">
-              <Label>Tipo</Label>
+              <Label>{t("form.type")}</Label>
               <Select value={type} onValueChange={(v) => { setType(v as any); setCategoryId(undefined); }}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="entrada">Entrada</SelectItem>
-                  <SelectItem value="despesa">Despesa</SelectItem>
+                  <SelectItem value="entrada">{t("registros.typeIncome")}</SelectItem>
+                  <SelectItem value="despesa">{t("registros.typeExpense")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           )}
           <div className="grid gap-2">
-            <Label>Data</Label>
+            <Label>{t("form.date")}</Label>
             <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
           </div>
           <div className="grid gap-2">
-            <Label>Categoria {type === "entrada" && <span className="text-muted-foreground text-xs">(opcional)</span>}</Label>
+            <Label>{t("form.category")} {type === "entrada" && <span className="text-muted-foreground text-xs">{t("form.optional")}</span>}</Label>
             <Select value={categoryId} onValueChange={setCategoryId}>
-              <SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger>
+              <SelectTrigger><SelectValue placeholder={t("form.select")} /></SelectTrigger>
               <SelectContent>
                 {filteredCats.map((c) => (
                   <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
@@ -114,11 +111,11 @@ export function TransactionFormDialog({ open, onOpenChange, initial, forcedType 
             </Select>
           </div>
           <div className="grid gap-2">
-            <Label>Descrição</Label>
-            <Input value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Ex.: Mercado" />
+            <Label>{t("form.description")}</Label>
+            <Input value={description} onChange={(e) => setDescription(e.target.value)} placeholder={t("form.descPlaceholder")} />
           </div>
           <div className="grid gap-2">
-            <Label>Valor</Label>
+            <Label>{t("form.value")}</Label>
             <Input
               inputMode="decimal"
               value={amount}
@@ -129,8 +126,8 @@ export function TransactionFormDialog({ open, onOpenChange, initial, forcedType 
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
-          <Button onClick={submit}>{initial ? "Salvar" : "Criar"}</Button>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>{t("common.cancel")}</Button>
+          <Button onClick={submit}>{initial ? t("common.save") : t("common.create")}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
