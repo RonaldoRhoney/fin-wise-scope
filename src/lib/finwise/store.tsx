@@ -30,6 +30,7 @@ type StoreCtx = {
   updateTransaction: (id: string, t: Omit<Transaction, "id">) => Promise<void>;
   deleteTransaction: (id: string) => Promise<void>;
   updateProfileName: (name: string) => Promise<void>;
+  updateProfileAvatar: (avatarUrl: string | null) => Promise<void>;
   signOut: () => Promise<void>;
   refresh: () => Promise<void>;
   exportJSON: () => string;
@@ -76,11 +77,11 @@ export function FinwiseProvider({ children }: { children: ReactNode }) {
   const loadProfileAndData = useCallback(async (uid: string) => {
     const { data: prof } = await supabase
       .from("profiles")
-      .select("id,name,email")
+      .select("id,name,email,avatar_url")
       .eq("auth_user_id", uid)
       .maybeSingle();
     if (prof) {
-      setProfile({ id: prof.id, name: prof.name ?? "", email: prof.email });
+      setProfile({ id: prof.id, name: prof.name ?? "", email: prof.email, avatarUrl: (prof as { avatar_url?: string | null }).avatar_url ?? null });
       const { data: tx } = await supabase
         .from("transactions")
         .select("*")
@@ -208,9 +209,20 @@ export function FinwiseProvider({ children }: { children: ReactNode }) {
 
   const updateProfileName: StoreCtx["updateProfileName"] = async (name) => {
     if (!profile) return;
-    const { error } = await supabase.from("profiles").update({ name }).eq("id", profile.id);
+    const trimmed = name.trim();
+    if (!trimmed) throw new Error("Nome obrigatório");
+    if (trimmed.length > 200) throw new Error("Nome muito longo (máx. 200)");
+    const { error } = await supabase.from("profiles").update({ name: trimmed }).eq("id", profile.id);
     if (error) throw error;
-    setProfile({ ...profile, name });
+    setProfile({ ...profile, name: trimmed });
+  };
+
+  const updateProfileAvatar: StoreCtx["updateProfileAvatar"] = async (avatarUrl) => {
+    if (!profile) return;
+    if (avatarUrl && avatarUrl.length > 400_000) throw new Error("Imagem muito grande (máx. ~300KB)");
+    const { error } = await supabase.from("profiles").update({ avatar_url: avatarUrl }).eq("id", profile.id);
+    if (error) throw error;
+    setProfile({ ...profile, avatarUrl });
   };
 
   const signOut = async () => { await supabase.auth.signOut(); };
@@ -253,6 +265,7 @@ export function FinwiseProvider({ children }: { children: ReactNode }) {
     updateTransaction,
     deleteTransaction,
     updateProfileName,
+    updateProfileAvatar,
     signOut,
     refresh,
     exportJSON,

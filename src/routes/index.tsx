@@ -96,15 +96,34 @@ function Dashboard() {
       </header>
 
       <section className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Kpi loading={loading} icon={<ArrowUpCircle className="h-4 w-4 text-emerald-400" />} label="Total Entradas" value={brl(totalIn)} />
-        <Kpi loading={loading} icon={<ArrowDownCircle className="h-4 w-4 text-rose-400" />} label="Total Saídas" value={brl(totalOut)} />
-        <Kpi loading={loading} icon={<CalendarDays className="h-4 w-4 text-sky-400" />} label="Gasto médio diário" value={brl(avgDaily)} />
         <Kpi
           loading={loading}
-          icon={<PieChart className="h-4 w-4 text-amber-400" />}
+          icon={<ArrowUpCircle className="h-5 w-5 text-emerald-500" />}
+          label="Total Entradas"
+          value={brl(totalIn)}
+          tone="emerald"
+        />
+        <Kpi
+          loading={loading}
+          icon={<ArrowDownCircle className="h-5 w-5 text-red-500" />}
+          label="Total Saídas"
+          value={brl(totalOut)}
+          tone="red"
+        />
+        <Kpi
+          loading={loading}
+          icon={<CalendarDays className="h-5 w-5 text-blue-500" />}
+          label="Gasto médio diário"
+          value={brl(avgDaily)}
+          tone="blue"
+        />
+        <Kpi
+          loading={loading}
+          icon={<PieChart className="h-5 w-5 text-purple-500" />}
           label="Maior categoria"
           value={topCat ? topCat.name : "—"}
           sub={topCat ? brl(topCat.total) : undefined}
+          tone="purple"
         />
       </section>
 
@@ -189,20 +208,29 @@ function Dashboard() {
   );
 }
 
-function Kpi({ loading, icon, label, value, sub }: { loading: boolean; icon: React.ReactNode; label: string; value: string; sub?: string }) {
+type KpiTone = "emerald" | "red" | "blue" | "purple";
+const toneStyles: Record<KpiTone, { ring: string; text: string; bg: string }> = {
+  emerald: { ring: "hover:border-emerald-500/50", text: "text-emerald-500", bg: "bg-emerald-500/10" },
+  red:     { ring: "hover:border-red-500/50",     text: "text-red-500",     bg: "bg-red-500/10" },
+  blue:    { ring: "hover:border-blue-500/50",    text: "text-blue-500",    bg: "bg-blue-500/10" },
+  purple:  { ring: "hover:border-purple-500/50",  text: "text-purple-500",  bg: "bg-purple-500/10" },
+};
+
+function Kpi({ loading, icon, label, value, sub, tone }: { loading: boolean; icon: React.ReactNode; label: string; value: string; sub?: string; tone?: KpiTone }) {
+  const t = tone ? toneStyles[tone] : null;
   return (
-    <Card className="transition-all hover:border-primary/40">
+    <Card className={`transition-all ${t?.ring ?? "hover:border-primary/40"}`}>
       <CardContent className="p-5">
-        <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
-          <span>{label}</span>
-          {icon}
+        <div className="mb-3 flex items-center justify-between text-xs text-muted-foreground">
+          <span className="font-medium uppercase tracking-wide">{label}</span>
+          <span className={`flex h-8 w-8 items-center justify-center rounded-full ${t?.bg ?? ""}`}>{icon}</span>
         </div>
         {loading ? (
           <Skeleton className="h-7 w-32" />
         ) : (
           <>
-            <div className="text-2xl font-semibold tracking-tight">{value}</div>
-            {sub && <div className="mt-1 text-xs text-muted-foreground">{sub}</div>}
+            <div className={`text-2xl font-semibold tracking-tight ${t?.text ?? ""}`}>{value}</div>
+            {sub && <div className={`mt-1 text-xs font-medium ${t?.text ?? "text-muted-foreground"}`}>{sub}</div>}
           </>
         )}
       </CardContent>
