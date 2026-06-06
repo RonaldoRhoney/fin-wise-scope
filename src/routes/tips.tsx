@@ -157,6 +157,7 @@ function TipsPage() {
             className="flex gap-2 border-t border-border/60 p-3 sm:p-4"
           >
             <Input
+              ref={inputRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder={t("tips.inputPlaceholder")}
