@@ -9,6 +9,7 @@ const links = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
   { to: "/relatorios", label: "Relatórios", icon: BarChart3 },
   { to: "/feedback", label: "Feedback", icon: MessageCircle },
+  { to: "/perfil", label: "Meu Perfil", icon: User },
   { to: "/configuracoes", label: "Configurações", icon: Settings },
 ];
 
@@ -41,18 +42,6 @@ function NavContent({ onNavigate }: { onNavigate?: () => void }) {
           );
         })}
       </nav>
-      <Link
-        to="/perfil"
-        onClick={onNavigate}
-        className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
-          path === "/perfil"
-            ? "bg-sidebar-accent text-sidebar-accent-foreground"
-            : "text-muted-foreground hover:bg-sidebar-accent/60 hover:text-foreground"
-        }`}
-      >
-        <User className="h-4 w-4" />
-        Meu Perfil
-      </Link>
     </div>
   );
 }
