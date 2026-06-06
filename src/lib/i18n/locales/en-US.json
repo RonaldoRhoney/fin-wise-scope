@@ -5,7 +5,7 @@
     "shareText": "Check out Controle Financeiro — smart control of your finances:"
   },
   "nav": {
-    "registros": "My Records",
+    "registros": "Transactions",
     "dashboard": "Dashboard",
     "relatorios": "Reports",
     "feedback": "Feedback",
@@ -61,7 +61,7 @@
     }
   },
   "registros": {
-    "title": "My Records",
+    "title": "Transactions",
     "subtitle": "Manage your income and expenses",
     "newIncome": "New Income",
     "newExpense": "New Expense",
