@@ -88,55 +88,93 @@ function Dashboard() {
         <Kpi loading={loading} icon={<ArrowUpCircle className="h-5 w-5 text-emerald-500" />} label={t("dashboard.kpi.totalIn")} value={brl(totalIn)} tone="emerald" />
         <Kpi loading={loading} icon={<ArrowDownCircle className="h-5 w-5 text-red-500" />} label={t("dashboard.kpi.totalOut")} value={brl(totalOut)} tone="red" />
         <Kpi loading={loading} icon={<CalendarDays className="h-5 w-5 text-blue-500" />} label={t("dashboard.kpi.avgDaily")} value={brl(avgDaily)} tone="blue" />
-        <Kpi loading={loading} icon={<PieChart className="h-5 w-5 text-purple-500" />} label={t("dashboard.kpi.topCategory")} value={topCat ? topCat.name : "—"} sub={topCat ? brl(topCat.total) : undefined} tone="purple" />
+        <Kpi loading={loading} icon={<PieIcon className="h-5 w-5 text-purple-500" />} label={t("dashboard.kpi.topCategory")} value={topCat ? topCat.name : "—"} sub={topCat ? brl(topCat.total) : undefined} tone="purple" />
       </section>
 
       <section className="mb-6 grid gap-4 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base"><TrendingUp className="h-4 w-4" /> {t("dashboard.charts.dailySpending")}</CardTitle>
-          </CardHeader>
-          <CardContent className="h-[280px]">
-            {loading ? (
-              <Skeleton className="h-full w-full" />
-            ) : daily.some((d) => d.total > 0) ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={daily} margin={{ top: 8, right: 8, left: -10, bottom: 0 }}>
-                  <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="3 3" opacity={0.3} />
-                  <XAxis dataKey="label" stroke="currentColor" fontSize={11} tick={{ fill: "currentColor" }} />
-                  <YAxis stroke="currentColor" fontSize={11} tick={{ fill: "currentColor" }} />
-                  <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8 }} formatter={(v: number) => brl(v)} />
-                  <Line type="monotone" dataKey="total" stroke="var(--primary)" strokeWidth={2} dot={false} />
-                </LineChart>
-              </ResponsiveContainer>
-            ) : (
-              <EmptyChart label={t("common.noDataShort")} />
-            )}
-          </CardContent>
-        </Card>
+        <SwitchableChart
+          title={t("dashboard.charts.dailySpending")}
+          icon={<TrendingUp className="h-4 w-4" />}
+          loading={loading}
+          empty={!daily.some((d) => d.total > 0)}
+          emptyLabel={t("common.noDataShort")}
+          types={["line", "area", "bar"]}
+          render={(type) => {
+            if (type === "area") return (
+              <AreaChart data={daily} margin={{ top: 8, right: 8, left: -10, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="var(--primary)" stopOpacity={0.5} />
+                    <stop offset="100%" stopColor="var(--primary)" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="3 3" opacity={0.3} />
+                <XAxis dataKey="label" stroke="currentColor" fontSize={11} />
+                <YAxis stroke="currentColor" fontSize={11} />
+                <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8 }} formatter={(v: number) => brl(v)} />
+                <Area type="monotone" dataKey="total" stroke="var(--primary)" strokeWidth={2} fill="url(#grad)" />
+              </AreaChart>
+            );
+            if (type === "bar") return (
+              <BarChart data={daily} margin={{ top: 8, right: 8, left: -10, bottom: 0 }}>
+                <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="3 3" opacity={0.3} />
+                <XAxis dataKey="label" stroke="currentColor" fontSize={11} />
+                <YAxis stroke="currentColor" fontSize={11} />
+                <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8 }} formatter={(v: number) => brl(v)} />
+                <Bar dataKey="total" fill="var(--primary)" radius={[6, 6, 0, 0]} />
+              </BarChart>
+            );
+            return (
+              <LineChart data={daily} margin={{ top: 8, right: 8, left: -10, bottom: 0 }}>
+                <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="3 3" opacity={0.3} />
+                <XAxis dataKey="label" stroke="currentColor" fontSize={11} />
+                <YAxis stroke="currentColor" fontSize={11} />
+                <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8 }} formatter={(v: number) => brl(v)} />
+                <Line type="monotone" dataKey="total" stroke="var(--primary)" strokeWidth={2} dot={false} />
+              </LineChart>
+            );
+          }}
+        />
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base"><PieChart className="h-4 w-4" /> {t("dashboard.charts.expensesByCategory")}</CardTitle>
-          </CardHeader>
-          <CardContent className="h-[280px]">
-            {loading ? (
-              <Skeleton className="h-full w-full" />
-            ) : byCat.length > 0 ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={byCat} margin={{ top: 8, right: 8, left: -10, bottom: 0 }}>
-                  <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="3 3" opacity={0.3} />
-                  <XAxis dataKey="name" stroke="currentColor" fontSize={11} tick={{ fill: "currentColor" }} />
-                  <YAxis stroke="currentColor" fontSize={11} tick={{ fill: "currentColor" }} />
-                  <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8 }} formatter={(v: number) => brl(v)} />
-                  <Bar dataKey="total" fill="var(--primary)" radius={[6, 6, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            ) : (
-              <EmptyChart label={t("common.noDataShort")} />
-            )}
-          </CardContent>
-        </Card>
+        <SwitchableChart
+          title={t("dashboard.charts.expensesByCategory")}
+          icon={<PieIcon className="h-4 w-4" />}
+          loading={loading}
+          empty={byCat.length === 0}
+          emptyLabel={t("common.noDataShort")}
+          types={["pie", "bar", "line"]}
+          render={(type) => {
+            if (type === "pie") return (
+              <PieChart>
+                <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8 }} formatter={(v: number) => brl(v)} />
+                <Legend wrapperStyle={{ fontSize: 11 }} />
+                <Pie data={byCat} dataKey="total" nameKey="name" cx="50%" cy="50%" outerRadius={90} innerRadius={45} paddingAngle={2}>
+                  {byCat.map((c, i) => <Cell key={i} fill={c.color} />)}
+                </Pie>
+              </PieChart>
+            );
+            if (type === "line") return (
+              <LineChart data={byCat} margin={{ top: 8, right: 8, left: -10, bottom: 0 }}>
+                <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="3 3" opacity={0.3} />
+                <XAxis dataKey="name" stroke="currentColor" fontSize={11} />
+                <YAxis stroke="currentColor" fontSize={11} />
+                <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8 }} formatter={(v: number) => brl(v)} />
+                <Line type="monotone" dataKey="total" stroke="var(--primary)" strokeWidth={2} />
+              </LineChart>
+            );
+            return (
+              <BarChart data={byCat} margin={{ top: 8, right: 8, left: -10, bottom: 0 }}>
+                <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="3 3" opacity={0.3} />
+                <XAxis dataKey="name" stroke="currentColor" fontSize={11} />
+                <YAxis stroke="currentColor" fontSize={11} />
+                <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8 }} formatter={(v: number) => brl(v)} />
+                <Bar dataKey="total" radius={[6, 6, 0, 0]}>
+                  {byCat.map((c, i) => <Cell key={i} fill={c.color} />)}
+                </Bar>
+              </BarChart>
+            );
+          }}
+        />
       </section>
 
       <section>
