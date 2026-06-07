@@ -8,9 +8,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowDownCircle, ArrowUpCircle, CalendarDays, PieChart, Plus, Sparkles, TrendingUp } from "lucide-react";
+import { ArrowDownCircle, ArrowUpCircle, CalendarDays, PieChart as PieIcon, Plus, Sparkles, TrendingUp, LineChart as LineIcon, BarChart3, AreaChart as AreaIcon } from "lucide-react";
 import {
   ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, BarChart, Bar,
+  PieChart, Pie, Cell, AreaChart, Area, Legend,
 } from "recharts";
 import { TransactionFormDialog } from "@/components/finwise/TransactionFormDialog";
 
