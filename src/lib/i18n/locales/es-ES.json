@@ -11,6 +11,7 @@
     "feedback": "Opiniones",
     "tips": "TipsMoney",
     "metas": "Metas",
+    "bancos": "Bancos",
     "perfil": "Mi Perfil",
     "configuracoes": "Ajustes",
     "menu": "Abrir menú"
@@ -309,5 +310,22 @@
       "saude": "Salud",
       "outros": "Otros"
     }
+  },
+  "bancos": {
+    "title": "Conectar Bancos",
+    "subtitle": "Importa los extractos de tu banco directamente en FinWise",
+    "howTitle": "Cómo funciona",
+    "step1": "Elige tu banco abajo.",
+    "step2": "Exporta el extracto en OFX o CSV desde la app/banca online de tu banco.",
+    "step3": "Sube el archivo aquí — tus movimientos se importarán automáticamente.",
+    "connect": "Conectar {{name}}",
+    "dialogDesc": "Sube el extracto exportado por tu banco.",
+    "uploadHint": "Archivos admitidos: {{formats}}",
+    "selectFile": "Seleccionar archivo",
+    "found": "Encontrados",
+    "importAll": "Importar {{count}} movimientos",
+    "imported": "{{count}} movimiento(s) importado(s) correctamente.",
+    "importFail": "Error al importar el extracto.",
+    "parseFail": "No se pudo leer el archivo. Verifica el formato (OFX/CSV)."
   }
 }

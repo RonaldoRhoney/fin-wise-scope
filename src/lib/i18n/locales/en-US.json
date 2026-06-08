@@ -11,6 +11,7 @@
     "feedback": "Feedback",
     "tips": "TipsMoney",
     "metas": "Goals",
+    "bancos": "Banks",
     "perfil": "My Profile",
     "configuracoes": "Settings",
     "menu": "Open menu"
@@ -309,5 +310,22 @@
       "saude": "Health",
       "outros": "Other"
     }
+  },
+  "bancos": {
+    "title": "Connect Banks",
+    "subtitle": "Import your bank statements directly into FinWise",
+    "howTitle": "How it works",
+    "step1": "Choose your bank below.",
+    "step2": "Export your statement as OFX or CSV from your bank's app/online banking.",
+    "step3": "Upload the file here — your transactions will be imported automatically.",
+    "connect": "Connect {{name}}",
+    "dialogDesc": "Upload the statement exported from your bank.",
+    "uploadHint": "Supported files: {{formats}}",
+    "selectFile": "Select file",
+    "found": "Found",
+    "importAll": "Import {{count}} transactions",
+    "imported": "{{count}} transaction(s) imported successfully.",
+    "importFail": "Failed to import statement.",
+    "parseFail": "Couldn't read the file. Please check the format (OFX/CSV)."
   }
 }

@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { BarChart3, LayoutDashboard, ListChecks, Menu, MessageCircle, Settings, Sparkles, Target, User } from "lucide-react";
+import { BarChart3, Building2, LayoutDashboard, ListChecks, Menu, MessageCircle, Settings, Sparkles, Target, User } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
@@ -10,6 +10,7 @@ const linkDefs = [
   { to: "/", key: "dashboard", icon: LayoutDashboard },
   { to: "/relatorios", key: "relatorios", icon: BarChart3 },
   { to: "/metas", key: "metas", icon: Target },
+  { to: "/bancos", key: "bancos", icon: Building2 },
   { to: "/tips", key: "tips", icon: Sparkles },
   { to: "/feedback", key: "feedback", icon: MessageCircle },
   { to: "/perfil", key: "perfil", icon: User },

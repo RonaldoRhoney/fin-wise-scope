@@ -11,6 +11,7 @@
     "feedback": "Feedback",
     "tips": "TipsMoney",
     "metas": "Metas",
+    "bancos": "Bancos",
     "perfil": "Meu Perfil",
     "configuracoes": "Configurações",
     "menu": "Abrir menu"
@@ -309,5 +310,22 @@
       "saude": "Saúde",
       "outros": "Outros"
     }
+  },
+  "bancos": {
+    "title": "Conectar Bancos",
+    "subtitle": "Importe seus extratos bancários direto para o FinWise",
+    "howTitle": "Como funciona",
+    "step1": "Escolha seu banco abaixo.",
+    "step2": "Exporte o extrato em OFX ou CSV pelo app/internet banking do banco.",
+    "step3": "Envie o arquivo aqui — seus lançamentos serão importados automaticamente.",
+    "connect": "Conectar {{name}}",
+    "dialogDesc": "Faça o upload do extrato exportado pelo seu banco.",
+    "uploadHint": "Arquivos suportados: {{formats}}",
+    "selectFile": "Selecionar arquivo",
+    "found": "Encontrados",
+    "importAll": "Importar {{count}} lançamentos",
+    "imported": "{{count}} lançamento(s) importado(s) com sucesso.",
+    "importFail": "Falha ao importar extrato.",
+    "parseFail": "Não foi possível ler o arquivo. Verifique o formato (OFX/CSV)."
   }
 }
