@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { BarChart3, Building2, LayoutDashboard, ListChecks, Menu, MessageCircle, Settings, Sparkles, Target, User } from "lucide-react";
+import { BarChart3, Building2, HelpCircle, LayoutDashboard, ListChecks, Menu, MessageCircle, Settings, Sparkles, Target, User } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
