@@ -15,6 +15,7 @@ const linkDefs = [
   { to: "/feedback", key: "feedback", icon: MessageCircle },
   { to: "/perfil", key: "perfil", icon: User },
   { to: "/configuracoes", key: "configuracoes", icon: Settings },
+  { to: "/ajuda", key: "ajuda", icon: HelpCircle },
 ] as const;
 
 function NavContent({ onNavigate }: { onNavigate?: () => void }) {
