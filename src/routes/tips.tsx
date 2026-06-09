@@ -106,7 +106,7 @@ function TipsPage() {
                     className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
                       m.role === "user"
                         ? "bg-primary text-primary-foreground"
-                        : "bg-muted/60 text-foreground"
+                        : "bg-muted/60 text-foreground max-h-96 overflow-y-auto"
                     }`}
                   >
                     {m.role === "assistant" ? (
