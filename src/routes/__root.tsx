@@ -16,6 +16,8 @@ import "@/lib/i18n";
 import { FinwiseProvider, useFinwise } from "@/lib/finwise/store";
 import { AppSidebar, MobileTopBar } from "@/components/finwise/AppSidebar";
 import { Toaster } from "@/components/ui/sonner";
+import rhoneyLogo from "@/assets/rhoneyinc-logo.png.asset.json";
+
 
 const PUBLIC_ROUTES = ["/auth", "/reset-password"];
 
