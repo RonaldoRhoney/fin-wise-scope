@@ -334,36 +334,37 @@
     "subtitle": "Guía paso a paso para empezar a usar el Control Financiero",
     "step1": {
       "title": "Accede a tu cuenta",
-      "desc": "En la pantalla inicial, haz clic en 'Entrar'. Puedes usar tu cuenta de Google, Apple o crear una cuenta con correo y contraseña. Si ya tienes una cuenta, solo ingresa tu correo y contraseña para acceder."
+      "desc": "Entra con Google, Apple o correo."
     },
     "step2": {
       "title": "Explora el Panel",
-      "desc": "Una vez dentro, verás el Panel con una visión general de tus finanzas: total de ingresos, gastos, gasto medio diario y la categoría principal de gasto. Usa los filtros de período (7 días, 30 días o total) para ajustar la vista."
+      "desc": "Ve ingresos, gastos y consumo por período."
     },
     "step3": {
-      "title": "Registra tus transacciones",
-      "desc": "Ve a 'Transacciones' en el menú lateral y haz clic en 'Nuevo Ingreso' o 'Nuevo Gasto'. Completa la fecha, descripción, categoría e importe. Todas tus movimientos quedan organizados en una lista completa con búsqueda y filtros."
+      "title": "Registra transacciones",
+      "desc": "En 'Transacciones', añade ingresos y gastos."
     },
     "step4": {
       "title": "Sigue los informes",
-      "desc": "Accede a 'Informes' para ver el historial mensual archivado automáticamente. Cada mes muestra el total de ingresos, gastos, saldo y cantidad de registros. También puedes exportar los datos en formato .xlsx."
+      "desc": "Ve el historial mensual y exporta en .xlsx."
     },
     "step5": {
-      "title": "Crea metas de ahorro",
-      "desc": "En 'Metas', define objetivos como viaje, coche, portátil o casa. Indica el monto objetivo, lo que ya has ahorrado y la fecha límite. Haz seguimiento del progreso y añade montos conforme ahorres."
+      "title": "Crea metas",
+      "desc": "Define objetivos y sigue tu progreso."
     },
     "step6": {
       "title": "Conecta tus bancos",
-      "desc": "En 'Bancos', elige tu institución financiera (Nubank, Inter, Banco do Brasil, Itaú, Bradesco, etc.). Exporta el extracto en OFX o CSV desde la app de tu banco y súbelo. Los movimientos se importarán automáticamente."
+      "desc": "Importa el extracto OFX o CSV del banco."
     },
     "step7": {
       "title": "Usa TipsMoney",
-      "desc": "TipsMoney es tu asistente financiero con IA. Haz preguntas sobre tus finanzas, pide consejos de ahorro, sugerencias de inversión o ayuda para crear un fondo de emergencia. Analiza tus datos para dar respuestas personalizadas."
+      "desc": "Pregunta al asistente IA sobre tus finanzas."
     },
     "step8": {
-      "title": "Exporta y haz copias de seguridad",
-      "desc": "En 'Ajustes' o 'Mi Perfil', puedes exportar todos tus datos en formato JSON para hacer una copia de seguridad. También es posible importar datos de otra cuenta o dispositivo, manteniendo todo sincronizado."
+      "title": "Haz copias de seguridad",
+      "desc": "Exporta o importa tus datos en JSON."
     },
+
     "extra": {
       "title": "Otras funcionalidades útiles",
       "feedback": {
