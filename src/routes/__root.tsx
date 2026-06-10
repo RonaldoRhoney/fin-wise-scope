@@ -151,8 +151,11 @@ function Shell() {
 
   if (isPublic) {
     return (
-      <div className="min-h-screen w-full bg-background text-foreground">
-        <Outlet />
+      <div className="flex min-h-screen w-full flex-col bg-background text-foreground">
+        <div className="flex-1">
+          <Outlet />
+        </div>
+        <Footer />
       </div>
     );
   }
@@ -169,7 +172,20 @@ function Shell() {
         <main className="flex-1 overflow-x-hidden">
           <Outlet />
         </main>
+        <Footer />
       </div>
     </div>
   );
 }
+
+function Footer() {
+  return (
+    <footer className="border-t border-border/60 bg-sidebar/40 px-4 py-4">
+      <div className="mx-auto flex max-w-7xl flex-col items-center justify-center gap-2 text-center text-xs text-muted-foreground sm:flex-row">
+        <img src={rhoneyLogo.url} alt="RhoneyInc" className="h-5 w-5 rounded-sm object-contain" />
+        <span>© {new Date().getFullYear()} <span className="font-medium text-foreground">@RhoneyInc</span> — Todos os direitos reservados.</span>
+      </div>
+    </footer>
+  );
+}
+
