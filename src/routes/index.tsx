@@ -14,6 +14,8 @@ import {
   PieChart, Pie, Cell, AreaChart, Area, Legend,
 } from "recharts";
 import { TransactionFormDialog } from "@/components/finwise/TransactionFormDialog";
+import rhoneyLogo from "@/assets/rhoneyinc-logo.png.asset.json";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({ meta: [{ title: "Controle Financeiro" }] }),
