@@ -379,6 +379,22 @@
         "title": "Configurações",
         "desc": "Altere o tema (claro/escuro), o idioma (Português, Inglês ou Espanhol) e exporte seus dados."
       }
+    },
+    "faq": {
+      "title": "Perguntas Frequentes",
+      "items": [
+        { "q": "O app é gratuito?", "a": "Sim, todas as funcionalidades principais são gratuitas." },
+        { "q": "Meus dados financeiros estão seguros?", "a": "Sim. Seus dados são protegidos por criptografia e ficam vinculados apenas à sua conta." },
+        { "q": "Preciso informar a senha do meu banco?", "a": "Não. A integração é feita por importação de extrato (OFX ou CSV), sem acessar sua conta bancária." },
+        { "q": "Quais bancos são compatíveis?", "a": "Todos que permitem exportar extrato em OFX ou CSV: Nubank, Inter, Banco do Brasil, Itaú, Bradesco, Santander, Caixa e outros." },
+        { "q": "Posso usar em mais de um dispositivo?", "a": "Sim. Basta entrar com a mesma conta e seus dados serão sincronizados." },
+        { "q": "Como faço backup dos meus dados?", "a": "Vá em 'Meu Perfil' ou 'Configurações' e clique em 'Exportar JSON' para salvar uma cópia." },
+        { "q": "Como funciona o TipsMoney?", "a": "É um assistente com IA que analisa suas finanças e responde dúvidas sobre economia, orçamento e investimentos." },
+        { "q": "Posso editar ou excluir uma transação?", "a": "Sim. Em 'Transações', clique no registro para editar ou usar a opção de excluir." },
+        { "q": "Como mudar o idioma ou tema do app?", "a": "Acesse 'Configurações' para alternar entre Português, Inglês ou Espanhol e ativar o modo escuro." },
+        { "q": "Esqueci minha senha, o que faço?", "a": "Na tela de login, clique em 'Recuperar' e enviaremos um link de redefinição para seu email." }
+      ]
     }
   }
+
 }

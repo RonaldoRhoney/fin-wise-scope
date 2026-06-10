@@ -379,6 +379,22 @@
         "title": "Settings",
         "desc": "Change the theme (light/dark), language (Portuguese, English, or Spanish), and export your data."
       }
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "items": [
+        { "q": "Is the app free?", "a": "Yes, all core features are free to use." },
+        { "q": "Is my financial data safe?", "a": "Yes. Your data is encrypted and tied only to your account." },
+        { "q": "Do I need to share my bank password?", "a": "No. Bank integration is done by importing statements (OFX or CSV), without accessing your account." },
+        { "q": "Which banks are supported?", "a": "Any bank that exports statements in OFX or CSV: Nubank, Inter, Banco do Brasil, Itaú, Bradesco, Santander, Caixa, and others." },
+        { "q": "Can I use it on multiple devices?", "a": "Yes. Just sign in with the same account and your data will sync." },
+        { "q": "How do I back up my data?", "a": "Go to 'My Profile' or 'Settings' and click 'Export JSON' to save a copy." },
+        { "q": "How does TipsMoney work?", "a": "It's an AI assistant that analyzes your finances and answers questions about saving, budgeting, and investing." },
+        { "q": "Can I edit or delete a transaction?", "a": "Yes. In 'Transactions', click the record to edit or use the delete option." },
+        { "q": "How do I change the app's language or theme?", "a": "Go to 'Settings' to switch between Portuguese, English, or Spanish and enable dark mode." },
+        { "q": "I forgot my password, what do I do?", "a": "On the login screen, click 'Recover' and we'll send a reset link to your email." }
+      ]
     }
   }
+
 }
