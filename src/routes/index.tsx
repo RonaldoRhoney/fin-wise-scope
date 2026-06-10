@@ -62,10 +62,18 @@ function Dashboard() {
   return (
     <div className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
       <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">{t("dashboard.title")}</h1>
-          <p className="text-sm text-muted-foreground">{t("dashboard.subtitle")}</p>
+        <div className="flex items-center gap-3">
+          <img
+            src={rhoneyLogo.url}
+            alt="RhoneyInc"
+            className="h-12 w-12 shrink-0 rounded-lg object-contain shadow-sm ring-1 ring-border/60"
+          />
+          <div>
+            <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">{t("dashboard.title")}</h1>
+            <p className="text-sm text-muted-foreground">{t("dashboard.subtitle")}</p>
+          </div>
         </div>
+
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex items-center gap-1 rounded-lg border border-border bg-card p-1">
             {(["7d", "30d", "all"] as const).map((p) => (
