@@ -142,6 +142,23 @@ function AjudaPage() {
           ))}
         </div>
       </section>
+
+      <section className="mt-8">
+        <h2 className="mb-4 text-lg font-semibold tracking-tight">{t("ajuda.faq.title")}</h2>
+        <Card>
+          <CardContent className="pt-6">
+            <Accordion type="single" collapsible className="w-full">
+              {(t("ajuda.faq.items", { returnObjects: true }) as { q: string; a: string }[]).map((item, i) => (
+                <AccordionItem key={i} value={`item-${i}`}>
+                  <AccordionTrigger className="text-left text-sm">{item.q}</AccordionTrigger>
+                  <AccordionContent className="text-sm text-muted-foreground">{item.a}</AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </CardContent>
+        </Card>
+      </section>
+
     </div>
   );
 }
