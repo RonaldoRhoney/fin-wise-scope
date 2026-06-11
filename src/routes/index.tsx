@@ -281,6 +281,15 @@ function BalanceCard({ loading, balance, label }: { loading: boolean; balance: n
 }
 
 
+
+function EmptyChart({ label }: { label: string }) {
+  return (
+    <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
+      {label}
+    </div>
+  );
+}
+
 type ChartType = "line" | "bar" | "pie" | "area";
 
 function SwitchableChart({
