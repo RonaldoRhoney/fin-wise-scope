@@ -227,21 +227,20 @@ const toneStyles: Record<KpiTone, { ring: string; text: string; bg: string }> = 
   purple:  { ring: "hover:border-purple-500/50",  text: "text-purple-500",  bg: "bg-purple-500/10" },
 };
 
-function Kpi({ loading, icon, label, value, sub, tone }: { loading: boolean; icon: React.ReactNode; label: string; value: string; sub?: string; tone?: KpiTone }) {
-  const ts = tone ? toneStyles[tone] : null;
+function Kpi({ loading, icon, label, value, sub, color }: { loading: boolean; icon: React.ReactNode; label: string; value: string; sub?: string; color: string }) {
   return (
-    <Card className={`transition-all ${ts?.ring ?? "hover:border-primary/40"}`}>
-      <CardContent className="p-5">
+    <Card className="transition-all" style={{ borderColor: `${color}40` }}>
+      <CardContent className="p-4 sm:p-5">
         <div className="mb-3 flex items-center justify-between text-xs text-muted-foreground">
           <span className="font-medium uppercase tracking-wide">{label}</span>
-          <span className={`flex h-8 w-8 items-center justify-center rounded-full ${ts?.bg ?? ""}`}>{icon}</span>
+          <span className="flex h-8 w-8 items-center justify-center rounded-full" style={{ backgroundColor: `${color}1A` }}>{icon}</span>
         </div>
         {loading ? (
           <Skeleton className="h-7 w-32" />
         ) : (
           <>
-            <div className={`text-2xl font-semibold tracking-tight ${ts?.text ?? ""}`}>{value}</div>
-            {sub && <div className={`mt-1 text-xs font-medium ${ts?.text ?? "text-muted-foreground"}`}>{sub}</div>}
+            <div className="text-xl font-semibold tracking-tight sm:text-2xl" style={{ color }}>{value}</div>
+            {sub && <div className="mt-1 text-xs font-medium" style={{ color }}>{sub}</div>}
           </>
         )}
       </CardContent>
@@ -249,13 +248,38 @@ function Kpi({ loading, icon, label, value, sub, tone }: { loading: boolean; ico
   );
 }
 
-function EmptyChart({ label }: { label: string }) {
+function BalanceCard({ loading, balance, label }: { loading: boolean; balance: number; label: string }) {
+  const positive = balance >= 0;
+  const color = positive ? "#3B82F6" : "#EF4444";
   return (
-    <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
-      {label}
-    </div>
+    <Card
+      className="overflow-hidden border-0 text-white"
+      style={{
+        background: positive
+          ? "linear-gradient(135deg, #1E3A8A 0%, #3B82F6 60%, #06B6D4 100%)"
+          : "linear-gradient(135deg, #7F1D1D 0%, #EF4444 100%)",
+        boxShadow: `0 20px 50px -20px ${color}80`,
+      }}
+    >
+      <CardContent className="p-6 sm:p-8">
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <p className="text-xs font-medium uppercase tracking-widest text-white/80">{label}</p>
+            {loading ? (
+              <Skeleton className="mt-3 h-10 w-48 bg-white/20" />
+            ) : (
+              <div className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">{brl(balance)}</div>
+            )}
+          </div>
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/15 ring-1 ring-white/30 sm:h-14 sm:w-14">
+            <TrendingUp className="h-6 w-6 sm:h-7 sm:w-7" />
+          </span>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
+
 
 type ChartType = "line" | "bar" | "pie" | "area";
 
