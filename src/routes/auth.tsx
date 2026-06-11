@@ -79,7 +79,7 @@ function AuthPage() {
   const onApple = () => onOAuth("apple");
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden p-6" style={{ background: "var(--gradient-hero)" }}>
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden p-6" style={{ background: "linear-gradient(135deg, oklch(0.18 0.08 260) 0%, oklch(0.16 0.10 280) 50%, oklch(0.20 0.12 300) 100%)" }}>
       <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden select-none">
         <span className="absolute left-[8%] top-[12%] text-7xl font-light text-primary/10 blur-[1px]">$</span>
         <span className="absolute left-[78%] top-[18%] text-5xl font-light text-primary/15">$</span>
