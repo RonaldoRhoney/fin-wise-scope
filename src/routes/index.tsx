@@ -34,11 +34,19 @@ function Dashboard() {
     return () => clearTimeout(tm);
   }, [filters.period, filters.categoryId]);
 
-  const dashFilters = { ...filters, search: "", type: "all" as const };
-  const filtered = useMemo(() => applyFilters(transactions, dashFilters), [transactions, filters.period, filters.categoryId]);
+  // KPIs ignoram filtro de categoria (para não esconder Entradas sem categoria)
+  const periodTx = useMemo(
+    () => applyFilters(transactions, { ...filters, categoryId: "all", search: "", type: "all" }),
+    [transactions, filters.period],
+  );
+  // Gráficos respeitam categoria selecionada
+  const filtered = useMemo(
+    () => applyFilters(transactions, { ...filters, search: "", type: "all" }),
+    [transactions, filters.period, filters.categoryId],
+  );
 
-  const totalIn = filtered.filter((tx) => tx.type === "entrada").reduce((s, tx) => s + tx.amount, 0);
-  const totalOut = filtered.filter((tx) => tx.type === "despesa").reduce((s, tx) => s + tx.amount, 0);
+  const totalIn = periodTx.filter((tx) => tx.type === "entrada").reduce((s, tx) => s + tx.amount, 0);
+  const totalOut = periodTx.filter((tx) => tx.type === "despesa").reduce((s, tx) => s + tx.amount, 0);
   const { days } = periodRange(filters.period, transactions);
   const avgDaily = totalOut / days;
 
