@@ -219,13 +219,6 @@ function Dashboard() {
   );
 }
 
-type KpiTone = "emerald" | "red" | "blue" | "purple";
-const toneStyles: Record<KpiTone, { ring: string; text: string; bg: string }> = {
-  emerald: { ring: "hover:border-emerald-500/50", text: "text-emerald-500", bg: "bg-emerald-500/10" },
-  red:     { ring: "hover:border-red-500/50",     text: "text-red-500",     bg: "bg-red-500/10" },
-  blue:    { ring: "hover:border-blue-500/50",    text: "text-blue-500",    bg: "bg-blue-500/10" },
-  purple:  { ring: "hover:border-purple-500/50",  text: "text-purple-500",  bg: "bg-purple-500/10" },
-};
 
 function Kpi({ loading, icon, label, value, sub, color }: { loading: boolean; icon: React.ReactNode; label: string; value: string; sub?: string; color: string }) {
   return (
