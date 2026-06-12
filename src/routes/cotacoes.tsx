@@ -56,11 +56,11 @@ function CotacoesPage() {
       const res = await fetch(URL, { cache: "no-store" });
       if (!res.ok) throw new Error("Falha na API");
       const data = (await res.json()) as Record<string, ApiItem>;
-      const list: Quote[] = PAIRS.map((p) => {
-        const key = `${p.code}BRL`;
-        const item = data[key];
-        if (!item) return null;
-        return {
+      const list: Quote[] = [];
+      for (const p of PAIRS) {
+        const item = data[`${p.code}BRL`];
+        if (!item) continue;
+        list.push({
           code: p.code,
           name: p.name,
           high: Number(item.high),
@@ -68,8 +68,8 @@ function CotacoesPage() {
           bid: Number(item.bid),
           pctChange: Number(item.pctChange),
           createDate: item.create_date,
-        };
-      }).filter((q): q is Quote => q !== null);
+        });
+      }
       setQuotes(list);
       setUpdatedAt(new Date());
     } catch (e) {
