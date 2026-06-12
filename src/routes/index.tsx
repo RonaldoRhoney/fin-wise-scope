@@ -14,6 +14,7 @@ import {
   PieChart, Pie, Cell, AreaChart, Area, Legend,
 } from "recharts";
 import { TransactionFormDialog } from "@/components/finwise/TransactionFormDialog";
+import { AnimatedNumber } from "@/components/finwise/AnimatedNumber";
 import rhoneyLogo from "@/assets/rhoneyinc-logo.png.asset.json";
 
 
