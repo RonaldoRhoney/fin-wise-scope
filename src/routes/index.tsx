@@ -229,9 +229,9 @@ function Dashboard() {
 }
 
 
-function Kpi({ loading, icon, label, value, sub, color }: { loading: boolean; icon: React.ReactNode; label: string; value: string; sub?: string; color: string }) {
+function Kpi({ loading, icon, label, value, sub, numericValue, numericSub, color }: { loading: boolean; icon: React.ReactNode; label: string; value?: string; sub?: string; numericValue?: number; numericSub?: number; color: string }) {
   return (
-    <Card className="transition-all" style={{ borderColor: `${color}40` }}>
+    <Card className="animate-fade-in transition-all hover:shadow-md" style={{ borderColor: `${color}40` }}>
       <CardContent className="p-4 sm:p-5">
         <div className="mb-3 flex items-center justify-between text-xs text-muted-foreground">
           <span className="font-medium uppercase tracking-wide">{label}</span>
@@ -241,8 +241,14 @@ function Kpi({ loading, icon, label, value, sub, color }: { loading: boolean; ic
           <Skeleton className="h-7 w-32" />
         ) : (
           <>
-            <div className="text-xl font-semibold tracking-tight sm:text-2xl" style={{ color }}>{value}</div>
-            {sub && <div className="mt-1 text-xs font-medium" style={{ color }}>{sub}</div>}
+            <div className="text-xl font-semibold tracking-tight tabular-nums sm:text-2xl" style={{ color }}>
+              {typeof numericValue === "number" ? <AnimatedNumber value={numericValue} format={brl} /> : value}
+            </div>
+            {(sub || typeof numericSub === "number") && (
+              <div className="mt-1 text-xs font-medium tabular-nums" style={{ color }}>
+                {typeof numericSub === "number" ? <AnimatedNumber value={numericSub} format={brl} /> : sub}
+              </div>
+            )}
           </>
         )}
       </CardContent>
