@@ -1,13 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useServerFn } from "@tanstack/react-start";
 import ReactMarkdown from "react-markdown";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Sparkles, Send, Bot, User as UserIcon } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Sparkles, Send, Bot, User as UserIcon, ShieldCheck, Landmark, TrendingUp, Bitcoin, PiggyBank, Lightbulb } from "lucide-react";
 import { askTipsMoney } from "@/lib/finwise/tips.functions";
+import { useFinwise } from "@/lib/finwise/store";
+import { brl } from "@/lib/finwise/format";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/tips")({
