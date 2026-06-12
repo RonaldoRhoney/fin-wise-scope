@@ -85,8 +85,8 @@ function TipsPage() {
   ];
 
   return (
-    <div className="mx-auto flex h-[calc(100vh-4rem)] max-w-4xl flex-col p-4 sm:p-6 lg:h-screen lg:p-8">
-      <header className="mb-4 flex items-center gap-3">
+    <div className="mx-auto flex max-w-4xl flex-col gap-6 p-4 sm:p-6 lg:p-8">
+      <header className="flex items-center gap-3">
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-emerald-500 text-white shadow-lg">
           <Sparkles className="h-5 w-5" />
         </div>
@@ -96,7 +96,9 @@ function TipsPage() {
         </div>
       </header>
 
-      <Card className="flex flex-1 flex-col overflow-hidden">
+      <InvestmentGuide balance={balance} />
+
+      <Card className="flex h-[70vh] flex-col overflow-hidden">
         <CardContent className="flex flex-1 flex-col gap-0 p-0">
           <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 sm:p-6">
             <div className="flex flex-col gap-4">
