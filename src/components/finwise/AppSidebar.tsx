@@ -1,11 +1,12 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { BarChart3, Building2, HelpCircle, LayoutDashboard, ListChecks, Menu, MessageCircle, Settings, Sparkles, Target, User, Banknote } from "lucide-react";
+import { BarChart3, Building2, HelpCircle, LayoutDashboard, ListChecks, Menu, MessageCircle, Settings, Sparkles, Target, User, Banknote, Shield } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useFinwise } from "@/lib/finwise/store";
+import { useIsAdmin } from "@/lib/finwise/use-is-admin";
 
 const ACTIVE_COLOR = "#10B981";
 
@@ -25,6 +26,8 @@ const secondaryLinks = [
   { to: "/configuracoes", key: "configuracoes", icon: Settings },
   { to: "/ajuda", key: "ajuda", icon: HelpCircle },
 ] as const;
+
+const adminLink = { to: "/admin", key: "admin", icon: Shield, label: "Admin" } as const;
 
 function UserHeader() {
   const { profile, session } = useFinwise();
@@ -81,6 +84,7 @@ function NavLinks({ items, onNavigate, path }: { items: ReadonlyArray<{ to: stri
 function NavContent({ onNavigate }: { onNavigate?: () => void }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const { t } = useTranslation();
+  const { isAdmin } = useIsAdmin();
   return (
     <div className="flex h-full flex-col p-4">
       <div className="mb-4 px-1">
@@ -92,6 +96,24 @@ function NavContent({ onNavigate }: { onNavigate?: () => void }) {
         <NavLinks items={primaryLinks} onNavigate={onNavigate} path={path} />
         <div className="my-3 h-px bg-border/60" />
         <NavLinks items={secondaryLinks} onNavigate={onNavigate} path={path} />
+        {isAdmin && (
+          <>
+            <div className="my-3 h-px bg-border/60" />
+            <Link
+              to={adminLink.to}
+              onClick={onNavigate}
+              className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
+                path === adminLink.to
+                  ? "bg-sidebar-accent font-medium text-foreground"
+                  : "text-muted-foreground hover:bg-sidebar-accent/60 hover:text-foreground"
+              }`}
+              style={path === adminLink.to ? { boxShadow: `inset 2px 0 0 ${ACTIVE_COLOR}` } : undefined}
+            >
+              <Shield className="h-4 w-4" style={path === adminLink.to ? { color: ACTIVE_COLOR } : { color: "#8B5CF6" }} />
+              {adminLink.label}
+            </Link>
+          </>
+        )}
       </nav>
     </div>
   );
