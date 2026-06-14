@@ -16,9 +16,15 @@ type Props = {
   onOpenChange: (o: boolean) => void;
   initial?: Transaction | null;
   forcedType?: "entrada" | "despesa";
+  prefill?: {
+    type?: "entrada" | "despesa";
+    description?: string;
+    amount?: number;
+    categoryId?: string;
+  } | null;
 };
 
-export function TransactionFormDialog({ open, onOpenChange, initial, forcedType }: Props) {
+export function TransactionFormDialog({ open, onOpenChange, initial, forcedType, prefill }: Props) {
   const { t } = useTranslation();
   const { categories, addTransaction, updateTransaction } = useFinwise();
   const [type, setType] = useState<"entrada" | "despesa">(forcedType ?? "despesa");
@@ -36,14 +42,15 @@ export function TransactionFormDialog({ open, onOpenChange, initial, forcedType 
         setDescription(initial.description);
         setAmount(String(initial.amount));
       } else {
-        setType(forcedType ?? "despesa");
+        setType(prefill?.type ?? forcedType ?? "despesa");
         setDate(todayISO());
-        setCategoryId(undefined);
-        setDescription("");
-        setAmount("");
+        setCategoryId(prefill?.categoryId);
+        setDescription(prefill?.description ?? "");
+        setAmount(prefill?.amount != null ? String(prefill.amount) : "");
       }
     }
-  }, [open, initial, forcedType]);
+  }, [open, initial, forcedType, prefill]);
+
 
   const filteredCats = categories.filter((c) => c.kind === type || c.kind === "both");
 
