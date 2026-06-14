@@ -65,3 +65,19 @@ export function expensesByCategory(txs: Transaction[], categories: Category[]) {
     }))
     .sort((a, b) => b.total - a.total);
 }
+
+export function incomeByCategory(txs: Transaction[], categories: Category[]) {
+  const map = new Map<string, number>();
+  txs.filter((t) => t.type === "entrada").forEach((t) => {
+    const k = t.categoryId || "sem";
+    map.set(k, (map.get(k) ?? 0) + t.amount);
+  });
+  return Array.from(map.entries())
+    .map(([id, total]) => ({
+      id,
+      name: categories.find((c) => c.id === id)?.name ?? "Sem categoria",
+      color: categories.find((c) => c.id === id)?.color ?? "#64748b",
+      total,
+    }))
+    .sort((a, b) => b.total - a.total);
+}
