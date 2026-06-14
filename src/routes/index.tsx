@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useFinwise } from "@/lib/finwise/store";
-import { applyFilters, dailyExpenses, expensesByCategory, periodRange } from "@/lib/finwise/selectors";
+import { applyFilters, dailyExpenses, expensesByCategory, incomeByCategory, periodRange } from "@/lib/finwise/selectors";
 import { brl, formatDate } from "@/lib/finwise/format";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
