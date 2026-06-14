@@ -32,6 +32,7 @@ function Registros() {
   const [page, setPage] = useState(1);
   const [openForm, setOpenForm] = useState(false);
   const [formType, setFormType] = useState<"entrada" | "despesa" | undefined>(undefined);
+  const [prefill, setPrefill] = useState<{ type?: "entrada" | "despesa"; description?: string; amount?: number } | null>(null);
   const [editing, setEditing] = useState<Transaction | null>(null);
   const [viewing, setViewing] = useState<Transaction | null>(null);
   const [confirmDel, setConfirmDel] = useState<Transaction | null>(null);
