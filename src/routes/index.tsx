@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useFinwise } from "@/lib/finwise/store";
-import { applyFilters, dailyExpenses, expensesByCategory, periodRange } from "@/lib/finwise/selectors";
+import { applyFilters, dailyExpenses, expensesByCategory, incomeByCategory, periodRange } from "@/lib/finwise/selectors";
 import { brl, formatDate } from "@/lib/finwise/format";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,6 +22,37 @@ export const Route = createFileRoute("/")({
   head: () => ({ meta: [{ title: "Controle Financeiro" }] }),
   component: Dashboard,
 });
+
+function CustomPieTooltip({ active, payload }: any) {
+  if (!active || !payload || !payload.length) return null;
+  const data = payload[0]?.payload;
+  if (!data) return null;
+  return (
+    <div className="rounded-lg border border-border bg-card p-3 shadow-md" style={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8 }}>
+      <p className="mb-1 text-sm font-semibold" style={{ color: data.color }}>{data.name}</p>
+      <div className="space-y-0.5 text-xs">
+        {data.income > 0 && (
+          <div className="flex items-center gap-2">
+            <span className="inline-block h-2 w-2 rounded-full" style={{ backgroundColor: "#10B981" }} />
+            <span className="text-muted-foreground">Entradas:</span>
+            <span className="font-medium tabular-nums" style={{ color: "#10B981" }}>{brl(data.income)}</span>
+          </div>
+        )}
+        {data.expense > 0 && (
+          <div className="flex items-center gap-2">
+            <span className="inline-block h-2 w-2 rounded-full" style={{ backgroundColor: "#EF4444" }} />
+            <span className="text-muted-foreground">Saídas:</span>
+            <span className="font-medium tabular-nums" style={{ color: "#EF4444" }}>{brl(data.expense)}</span>
+          </div>
+        )}
+        <div className="mt-1 flex items-center gap-2 border-t border-border pt-1">
+          <span className="text-muted-foreground">Total:</span>
+          <span className="font-semibold tabular-nums">{brl(data.total)}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function Dashboard() {
   const { t } = useTranslation();
@@ -52,7 +83,25 @@ function Dashboard() {
   const avgDaily = totalOut / days;
 
   const byCat = expensesByCategory(filtered, categories);
+  const byCatIncome = incomeByCategory(filtered, categories);
   const topCat = byCat[0];
+
+  const combinedCatMap = useMemo(() => {
+    const map = new Map<string, { name: string; color: string; income: number; expense: number; total: number }>();
+    byCat.forEach((c) => {
+      map.set(c.id, { name: c.name, color: c.color, income: 0, expense: c.total, total: c.total });
+    });
+    byCatIncome.forEach((c) => {
+      const existing = map.get(c.id);
+      if (existing) {
+        existing.income = c.total;
+        existing.total = existing.expense + c.total;
+      } else {
+        map.set(c.id, { name: c.name, color: c.color, income: c.total, expense: 0, total: c.total });
+      }
+    });
+    return Array.from(map.values()).sort((a, b) => b.total - a.total);
+  }, [byCat, byCatIncome]);
 
   const daily = dailyExpenses(filtered, filters);
   const peak = daily.reduce((acc, d) => (d.total > acc.total ? d : acc), { date: "", label: "", total: 0 });
@@ -170,10 +219,10 @@ function Dashboard() {
           render={(type) => {
             if (type === "pie") return (
               <PieChart>
-                <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8 }} formatter={(v: number) => brl(v)} />
+                <Tooltip content={<CustomPieTooltip />} />
                 <Legend wrapperStyle={{ fontSize: 11 }} />
-                <Pie data={byCat} dataKey="total" nameKey="name" cx="50%" cy="50%" outerRadius={90} innerRadius={45} paddingAngle={2}>
-                  {byCat.map((c, i) => <Cell key={i} fill={c.color} />)}
+                <Pie data={combinedCatMap} dataKey="total" nameKey="name" cx="50%" cy="50%" outerRadius={90} innerRadius={45} paddingAngle={2}>
+                  {combinedCatMap.map((c, i) => <Cell key={i} fill={c.color} />)}
                 </Pie>
               </PieChart>
             );
