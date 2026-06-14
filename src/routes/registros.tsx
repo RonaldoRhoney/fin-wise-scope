@@ -17,6 +17,7 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Eye, Pencil, Plus, Search, Trash2, ArrowUpCircle, ArrowDownCircle, Wallet, History } from "lucide-react";
 import { TransactionFormDialog } from "@/components/finwise/TransactionFormDialog";
+import { VoiceTransactionButton } from "@/components/finwise/VoiceTransactionButton";
 import { toast } from "sonner";
 import { toUserMessage } from "@/lib/finwise/errors";
 
@@ -31,6 +32,7 @@ function Registros() {
   const [page, setPage] = useState(1);
   const [openForm, setOpenForm] = useState(false);
   const [formType, setFormType] = useState<"entrada" | "despesa" | undefined>(undefined);
+  const [prefill, setPrefill] = useState<{ type?: "entrada" | "despesa"; description?: string; amount?: number } | null>(null);
   const [editing, setEditing] = useState<Transaction | null>(null);
   const [viewing, setViewing] = useState<Transaction | null>(null);
   const [confirmDel, setConfirmDel] = useState<Transaction | null>(null);
@@ -80,20 +82,29 @@ function Registros() {
         </div>
         <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
           <Button
-            onClick={() => { setEditing(null); setFormType("entrada"); setOpenForm(true); }}
+            onClick={() => { setEditing(null); setPrefill(null); setFormType("entrada"); setOpenForm(true); }}
             className="w-full bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/25 sm:w-auto"
             variant="secondary"
           >
             <ArrowUpCircle className="h-4 w-4" /> {t("registros.newIncome")}
           </Button>
           <Button
-            onClick={() => { setEditing(null); setFormType("despesa"); setOpenForm(true); }}
+            onClick={() => { setEditing(null); setPrefill(null); setFormType("despesa"); setOpenForm(true); }}
             className="w-full bg-rose-500/15 text-rose-300 hover:bg-rose-500/25 sm:w-auto"
             variant="secondary"
           >
             <ArrowDownCircle className="h-4 w-4" /> {t("registros.newExpense")}
           </Button>
+          <VoiceTransactionButton
+            onParsed={(p) => {
+              setEditing(null);
+              setFormType(undefined);
+              setPrefill(p);
+              setOpenForm(true);
+            }}
+          />
         </div>
+
       </header>
 
       <section className="mb-6 grid gap-4 sm:grid-cols-3">
@@ -233,7 +244,7 @@ function Registros() {
         </div>
       )}
 
-      <TransactionFormDialog open={openForm} onOpenChange={(o) => { setOpenForm(o); if (!o) { setEditing(null); setFormType(undefined); } }} initial={editing} forcedType={editing ? undefined : formType} />
+      <TransactionFormDialog open={openForm} onOpenChange={(o) => { setOpenForm(o); if (!o) { setEditing(null); setFormType(undefined); setPrefill(null); } }} initial={editing} forcedType={editing ? undefined : formType} prefill={prefill} />
 
       <Dialog open={!!viewing} onOpenChange={(o) => !o && setViewing(null)}>
         <DialogContent>
