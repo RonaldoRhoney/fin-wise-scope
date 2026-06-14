@@ -244,7 +244,7 @@ function Registros() {
         </div>
       )}
 
-      <TransactionFormDialog open={openForm} onOpenChange={(o) => { setOpenForm(o); if (!o) { setEditing(null); setFormType(undefined); } }} initial={editing} forcedType={editing ? undefined : formType} />
+      <TransactionFormDialog open={openForm} onOpenChange={(o) => { setOpenForm(o); if (!o) { setEditing(null); setFormType(undefined); setPrefill(null); } }} initial={editing} forcedType={editing ? undefined : formType} prefill={prefill} />
 
       <Dialog open={!!viewing} onOpenChange={(o) => !o && setViewing(null)}>
         <DialogContent>
