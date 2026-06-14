@@ -188,10 +188,10 @@ function Dashboard() {
           render={(type) => {
             if (type === "pie") return (
               <PieChart>
-                <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8 }} formatter={(v: number) => brl(v)} />
+                <Tooltip content={<CustomPieTooltip />} />
                 <Legend wrapperStyle={{ fontSize: 11 }} />
-                <Pie data={byCat} dataKey="total" nameKey="name" cx="50%" cy="50%" outerRadius={90} innerRadius={45} paddingAngle={2}>
-                  {byCat.map((c, i) => <Cell key={i} fill={c.color} />)}
+                <Pie data={combinedCatMap} dataKey="total" nameKey="name" cx="50%" cy="50%" outerRadius={90} innerRadius={45} paddingAngle={2}>
+                  {combinedCatMap.map((c, i) => <Cell key={i} fill={c.color} />)}
                 </Pie>
               </PieChart>
             );
