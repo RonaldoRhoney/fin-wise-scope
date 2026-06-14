@@ -23,6 +23,37 @@ export const Route = createFileRoute("/")({
   component: Dashboard,
 });
 
+function CustomPieTooltip({ active, payload }: any) {
+  if (!active || !payload || !payload.length) return null;
+  const data = payload[0]?.payload;
+  if (!data) return null;
+  return (
+    <div className="rounded-lg border border-border bg-card p-3 shadow-md" style={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8 }}>
+      <p className="mb-1 text-sm font-semibold" style={{ color: data.color }}>{data.name}</p>
+      <div className="space-y-0.5 text-xs">
+        {data.income > 0 && (
+          <div className="flex items-center gap-2">
+            <span className="inline-block h-2 w-2 rounded-full" style={{ backgroundColor: "#10B981" }} />
+            <span className="text-muted-foreground">Entradas:</span>
+            <span className="font-medium tabular-nums" style={{ color: "#10B981" }}>{brl(data.income)}</span>
+          </div>
+        )}
+        {data.expense > 0 && (
+          <div className="flex items-center gap-2">
+            <span className="inline-block h-2 w-2 rounded-full" style={{ backgroundColor: "#EF4444" }} />
+            <span className="text-muted-foreground">Saídas:</span>
+            <span className="font-medium tabular-nums" style={{ color: "#EF4444" }}>{brl(data.expense)}</span>
+          </div>
+        )}
+        <div className="mt-1 flex items-center gap-2 border-t border-border pt-1">
+          <span className="text-muted-foreground">Total:</span>
+          <span className="font-semibold tabular-nums">{brl(data.total)}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Dashboard() {
   const { t } = useTranslation();
   const { transactions, categories, filters, setFilters } = useFinwise();
