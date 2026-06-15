@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useFinwise } from "@/lib/finwise/store";
+import { applyFilters } from "@/lib/finwise/selectors";
 import type { Transaction } from "@/lib/finwise/types";
 import { brl, formatDate } from "@/lib/finwise/format";
 import { Card, CardContent } from "@/components/ui/card";
@@ -53,14 +54,15 @@ function Registros() {
     return () => window.removeEventListener("keydown", onKey);
   }, [navigate]);
 
-  const filtered = useMemo(() => {
-    return transactions.filter((tx) => {
-      if (filters.type !== "all" && tx.type !== filters.type) return false;
-      if (filters.categoryId !== "all" && tx.categoryId !== filters.categoryId) return false;
-      if (filters.search && !tx.description.toLowerCase().includes(filters.search.toLowerCase())) return false;
-      return true;
-    }).sort((a, b) => b.date.localeCompare(a.date));
-  }, [transactions, filters]);
+  const filtered = useMemo(
+    () => applyFilters(transactions, filters).sort((a, b) => b.date.localeCompare(a.date)),
+    [transactions, filters],
+  );
+
+  const periodLabel =
+    filters.period === "7d" ? t("dashboard.period.7d") :
+    filters.period === "30d" ? t("dashboard.period.30d") :
+    t("dashboard.period.all");
 
   const totalIn = useMemo(() => filtered.filter((tx) => tx.type === "entrada").reduce((s, tx) => s + tx.amount, 0), [filtered]);
   const totalOut = useMemo(() => filtered.filter((tx) => tx.type === "despesa").reduce((s, tx) => s + tx.amount, 0), [filtered]);
@@ -115,7 +117,7 @@ function Registros() {
               <ArrowUpCircle className="h-4 w-4 text-emerald-400" />
             </div>
             <div className="text-2xl font-semibold tracking-tight text-emerald-400">{brl(totalIn)}</div>
-            <div className="mt-1 text-xs text-muted-foreground">{t("registros.recordsCount", { count: filtered.filter((tx) => tx.type === "entrada").length })}</div>
+            <div className="mt-1 text-xs text-muted-foreground">{t("registros.recordsCount", { count: filtered.filter((tx) => tx.type === "entrada").length })} · {periodLabel}</div>
           </CardContent>
         </Card>
         <Card className="transition-all hover:border-primary/40">
@@ -125,7 +127,7 @@ function Registros() {
               <ArrowDownCircle className="h-4 w-4 text-rose-400" />
             </div>
             <div className="text-2xl font-semibold tracking-tight text-rose-400">{brl(totalOut)}</div>
-            <div className="mt-1 text-xs text-muted-foreground">{t("registros.recordsCount", { count: filtered.filter((tx) => tx.type === "despesa").length })}</div>
+            <div className="mt-1 text-xs text-muted-foreground">{t("registros.recordsCount", { count: filtered.filter((tx) => tx.type === "despesa").length })} · {periodLabel}</div>
           </CardContent>
         </Card>
         <Card className="transition-all hover:border-primary/40">
@@ -137,7 +139,7 @@ function Registros() {
             <div className={`text-2xl font-semibold tracking-tight ${saldo >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
               {brl(saldo)}
             </div>
-            <div className="mt-1 text-xs text-muted-foreground">{t("registros.balancePeriod")}</div>
+            <div className="mt-1 text-xs text-muted-foreground">Saldo do período: {periodLabel}</div>
           </CardContent>
         </Card>
       </section>
@@ -150,6 +152,13 @@ function Registros() {
 
         <Card className="mb-4">
           <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:flex-wrap">
+            <div className="flex items-center gap-1 rounded-lg border border-border bg-card p-1">
+              {(["7d", "30d", "all"] as const).map((p) => (
+                <Button key={p} size="sm" variant={filters.period === p ? "default" : "ghost"} onClick={() => setFilters({ period: p })}>
+                  {t(`dashboard.period.${p}`)}
+                </Button>
+              ))}
+            </div>
             <div className="relative w-full flex-1 sm:min-w-[200px]">
               <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input

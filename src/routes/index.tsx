@@ -153,7 +153,7 @@ function Dashboard() {
       </header>
 
       <section className="mb-4">
-        <BalanceCard loading={loading} balance={totalIn - totalOut} label={t("dashboard.kpi.currentBalance", "Saldo atual")} />
+        <BalanceCard loading={loading} balance={totalIn - totalOut} label={`${t("dashboard.kpi.currentBalance", "Saldo atual")} · ${t(`dashboard.period.${filters.period}`)}`} />
       </section>
 
       <section className="mb-6 grid grid-cols-2 gap-4">
