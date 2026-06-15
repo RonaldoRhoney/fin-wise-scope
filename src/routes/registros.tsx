@@ -82,32 +82,9 @@ function Registros() {
           <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">{t("registros.title")}</h1>
           <p className="text-sm text-muted-foreground">{t("registros.subtitle")}</p>
         </div>
-        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
-          <Button
-            onClick={() => { setEditing(null); setPrefill(null); setFormType("entrada"); setOpenForm(true); }}
-            className="w-full bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/25 sm:w-auto"
-            variant="secondary"
-          >
-            <ArrowUpCircle className="h-4 w-4" /> {t("registros.newIncome")}
-          </Button>
-          <Button
-            onClick={() => { setEditing(null); setPrefill(null); setFormType("despesa"); setOpenForm(true); }}
-            className="w-full bg-rose-500/15 text-rose-300 hover:bg-rose-500/25 sm:w-auto"
-            variant="secondary"
-          >
-            <ArrowDownCircle className="h-4 w-4" /> {t("registros.newExpense")}
-          </Button>
-          <VoiceTransactionButton
-            onParsed={(p) => {
-              setEditing(null);
-              setFormType(undefined);
-              setPrefill(p);
-              setOpenForm(true);
-            }}
-          />
-        </div>
-
       </header>
+
+      <section className="mb-6 grid gap-4 sm:grid-cols-3">
 
       <section className="mb-6 grid gap-4 sm:grid-cols-3">
         <Card className="transition-all hover:border-primary/40">
