@@ -18,7 +18,7 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Eye, Pencil, Plus, Search, Trash2, ArrowUpCircle, ArrowDownCircle, Wallet, History } from "lucide-react";
 import { TransactionFormDialog } from "@/components/finwise/TransactionFormDialog";
-import { VoiceTransactionButton } from "@/components/finwise/VoiceTransactionButton";
+import { FloatingActionMenu } from "@/components/finwise/FloatingActionMenu";
 import { toast } from "sonner";
 import { toUserMessage } from "@/lib/finwise/errors";
 
@@ -76,37 +76,12 @@ function Registros() {
   const catName = (id?: string) => categories.find((c) => c.id === id)?.name ?? "—";
 
   return (
-    <div className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
+    <div className="relative mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
       <header className="mb-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
         <div>
           <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">{t("registros.title")}</h1>
           <p className="text-sm text-muted-foreground">{t("registros.subtitle")}</p>
         </div>
-        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
-          <Button
-            onClick={() => { setEditing(null); setPrefill(null); setFormType("entrada"); setOpenForm(true); }}
-            className="w-full bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/25 sm:w-auto"
-            variant="secondary"
-          >
-            <ArrowUpCircle className="h-4 w-4" /> {t("registros.newIncome")}
-          </Button>
-          <Button
-            onClick={() => { setEditing(null); setPrefill(null); setFormType("despesa"); setOpenForm(true); }}
-            className="w-full bg-rose-500/15 text-rose-300 hover:bg-rose-500/25 sm:w-auto"
-            variant="secondary"
-          >
-            <ArrowDownCircle className="h-4 w-4" /> {t("registros.newExpense")}
-          </Button>
-          <VoiceTransactionButton
-            onParsed={(p) => {
-              setEditing(null);
-              setFormType(undefined);
-              setPrefill(p);
-              setOpenForm(true);
-            }}
-          />
-        </div>
-
       </header>
 
       <section className="mb-6 grid gap-4 sm:grid-cols-3">
@@ -297,6 +272,17 @@ function Registros() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <FloatingActionMenu
+        onIncome={() => { setEditing(null); setPrefill(null); setFormType("entrada"); setOpenForm(true); }}
+        onExpense={() => { setEditing(null); setPrefill(null); setFormType("despesa"); setOpenForm(true); }}
+        onVoiceParsed={(p) => {
+          setEditing(null);
+          setFormType(undefined);
+          setPrefill(p);
+          setOpenForm(true);
+        }}
+      />
     </div>
   );
 }
