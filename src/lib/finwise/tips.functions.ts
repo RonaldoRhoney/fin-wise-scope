@@ -148,6 +148,11 @@ Histórico (últimos meses arquivados): ${JSON.stringify(history)}
     }
 
     const payload = await res.json();
-    const reply: string = payload?.choices?.[0]?.message?.content ?? "";
+    let reply: string = payload?.choices?.[0]?.message?.content ?? "";
+    const lang = (data.language in DISCLAIMERS ? data.language : "pt-BR") as keyof typeof DISCLAIMERS;
+    const disclaimer = DISCLAIMERS[lang];
+    if (reply && INVESTMENT_PATTERN.test(reply) && !reply.includes(disclaimer)) {
+      reply = `${reply.trimEnd()}\n\n${disclaimer}`;
+    }
     return { reply, summary: current };
   });
