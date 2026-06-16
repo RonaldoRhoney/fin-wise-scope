@@ -374,7 +374,7 @@
         { "q": "O app é gratuito?", "a": "Sim, todas as funcionalidades principais são gratuitas." },
         { "q": "Meus dados financeiros estão seguros?", "a": "Sim. Seus dados são protegidos por criptografia e ficam vinculados apenas à sua conta." },
         { "q": "Preciso informar a senha do meu banco?", "a": "Não. A integração é feita por importação de extrato (OFX ou CSV), sem acessar sua conta bancária." },
-        { "q": "Quais bancos são compatíveis?", "a": "Todos que permitem exportar extrato em OFX ou CSV: Nubank, Inter, Banco do Brasil, Itaú, Bradesco, Santander, Caixa e outros." },
+        { "q": "Preciso informar dados do meu banco?", "a": "Não. As transações são cadastradas manualmente, por importação JSON ou pelo comando de voz." },
         { "q": "Posso usar em mais de um dispositivo?", "a": "Sim. Basta entrar com a mesma conta e seus dados serão sincronizados." },
         { "q": "Como faço backup dos meus dados?", "a": "Vá em 'Meu Perfil' ou 'Configurações' e clique em 'Exportar JSON' para salvar uma cópia." },
         { "q": "Como funciona o TipsMoney?", "a": "É um assistente com IA que analisa suas finanças e responde dúvidas sobre economia, orçamento e investimentos." },
