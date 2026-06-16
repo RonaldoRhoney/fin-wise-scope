@@ -18,7 +18,6 @@ import { Route as MetasRouteImport } from './routes/metas'
 import { Route as FeedbackRouteImport } from './routes/feedback'
 import { Route as CotacoesRouteImport } from './routes/cotacoes'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
-import { Route as BancosRouteImport } from './routes/bancos'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AjudaRouteImport } from './routes/ajuda'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -69,11 +68,6 @@ const ConfiguracoesRoute = ConfiguracoesRouteImport.update({
   path: '/configuracoes',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BancosRoute = BancosRouteImport.update({
-  id: '/bancos',
-  path: '/bancos',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -100,7 +94,6 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/ajuda': typeof AjudaRoute
   '/auth': typeof AuthRoute
-  '/bancos': typeof BancosRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/cotacoes': typeof CotacoesRoute
   '/feedback': typeof FeedbackRoute
@@ -116,7 +109,6 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/ajuda': typeof AjudaRoute
   '/auth': typeof AuthRoute
-  '/bancos': typeof BancosRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/cotacoes': typeof CotacoesRoute
   '/feedback': typeof FeedbackRoute
@@ -133,7 +125,6 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/ajuda': typeof AjudaRoute
   '/auth': typeof AuthRoute
-  '/bancos': typeof BancosRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/cotacoes': typeof CotacoesRoute
   '/feedback': typeof FeedbackRoute
@@ -151,7 +142,6 @@ export interface FileRouteTypes {
     | '/admin'
     | '/ajuda'
     | '/auth'
-    | '/bancos'
     | '/configuracoes'
     | '/cotacoes'
     | '/feedback'
@@ -167,7 +157,6 @@ export interface FileRouteTypes {
     | '/admin'
     | '/ajuda'
     | '/auth'
-    | '/bancos'
     | '/configuracoes'
     | '/cotacoes'
     | '/feedback'
@@ -183,7 +172,6 @@ export interface FileRouteTypes {
     | '/admin'
     | '/ajuda'
     | '/auth'
-    | '/bancos'
     | '/configuracoes'
     | '/cotacoes'
     | '/feedback'
@@ -200,7 +188,6 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   AjudaRoute: typeof AjudaRoute
   AuthRoute: typeof AuthRoute
-  BancosRoute: typeof BancosRoute
   ConfiguracoesRoute: typeof ConfiguracoesRoute
   CotacoesRoute: typeof CotacoesRoute
   FeedbackRoute: typeof FeedbackRoute
@@ -277,13 +264,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConfiguracoesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/bancos': {
-      id: '/bancos'
-      path: '/bancos'
-      fullPath: '/bancos'
-      preLoaderRoute: typeof BancosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -320,7 +300,6 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   AjudaRoute: AjudaRoute,
   AuthRoute: AuthRoute,
-  BancosRoute: BancosRoute,
   ConfiguracoesRoute: ConfiguracoesRoute,
   CotacoesRoute: CotacoesRoute,
   FeedbackRoute: FeedbackRoute,
