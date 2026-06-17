@@ -16,6 +16,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import { toUserMessage } from "@/lib/finwise/errors";
 import {
   Plane, Car, Bike, Laptop, Home, GraduationCap, Heart, PiggyBank, Plus, Trash2, Wallet,
 } from "lucide-react";
@@ -61,7 +62,7 @@ function MetasPage() {
       .from("savings_goals")
       .select("*")
       .order("created_at", { ascending: false });
-    if (error) toast.error(error.message);
+    if (error) toast.error(toUserMessage(error, t("errors.generic")));
     setGoals(((data as Goal[] | null) ?? []).map((g) => ({
       ...g,
       target_amount: Number(g.target_amount),
@@ -139,7 +140,7 @@ function GoalCard({ goal, onChange }: { goal: Goal; onChange: () => void }) {
       .from("savings_goals")
       .update({ saved_amount: goal.saved_amount + v })
       .eq("id", goal.id);
-    if (error) return toast.error(error.message);
+    if (error) return toast.error(toUserMessage(error, t("errors.generic")));
     toast.success(t("metas.amountAdded"));
     setAddOpen(false); setAmount(""); onChange();
   };
@@ -147,7 +148,7 @@ function GoalCard({ goal, onChange }: { goal: Goal; onChange: () => void }) {
   const remove = async () => {
     if (!confirm(t("metas.confirmDelete"))) return;
     const { error } = await supabase.from("savings_goals").delete().eq("id", goal.id);
-    if (error) return toast.error(error.message);
+    if (error) return toast.error(toUserMessage(error, t("errors.generic")));
     toast.success(t("metas.deleted")); onChange();
   };
 
@@ -224,7 +225,7 @@ function GoalDialog({ onClose }: { onClose: () => void }) {
       color,
     });
     setSaving(false);
-    if (error) return toast.error(error.message);
+    if (error) return toast.error(toUserMessage(error, t("errors.generic")));
     toast.success(t("metas.created"));
     onClose();
   };
