@@ -23,31 +23,84 @@ export const Route = createFileRoute("/")({
   component: Dashboard,
 });
 
+const TOOLTIP_BG = "#FFFFFF";
+const TOOLTIP_TEXT = "#1E293B";
+const TOOLTIP_MUTED = "#64748B";
+
+function CustomChartTooltip({ active, payload, label }: any) {
+  if (!active || !payload || !payload.length) return null;
+  const first = payload[0];
+  const color = first?.payload?.fill || first?.payload?.color || first?.color || "#3B82F6";
+  return (
+    <div
+      style={{
+        background: TOOLTIP_BG,
+        color: TOOLTIP_TEXT,
+        border: `1px solid ${color}`,
+        borderRadius: 8,
+        boxShadow: "0 4px 16px rgba(0,0,0,0.18)",
+        padding: "8px 12px",
+        fontSize: 13,
+        minWidth: 130,
+      }}
+    >
+      {label !== undefined && label !== "" && (
+        <div style={{ fontWeight: 700, color: TOOLTIP_TEXT, marginBottom: 4 }}>{label}</div>
+      )}
+      <div style={{ display: "grid", gap: 2 }}>
+        {payload.map((p: any, i: number) => {
+          const c = p.payload?.fill || p.payload?.color || p.color || color;
+          return (
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 2, background: c }} />
+              <span style={{ color: TOOLTIP_MUTED, fontSize: 12 }}>{p.name}:</span>
+              <span style={{ fontWeight: 700, color: TOOLTIP_TEXT, marginLeft: "auto" }}>
+                {brl(Number(p.value) || 0)}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function CustomPieTooltip({ active, payload }: any) {
   if (!active || !payload || !payload.length) return null;
   const data = payload[0]?.payload;
   if (!data) return null;
   return (
-    <div className="rounded-lg border border-border bg-card p-3 shadow-md" style={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8 }}>
-      <p className="mb-1 text-sm font-semibold" style={{ color: data.color }}>{data.name}</p>
-      <div className="space-y-0.5 text-xs">
+    <div
+      style={{
+        background: TOOLTIP_BG,
+        color: TOOLTIP_TEXT,
+        border: `1px solid ${data.color}`,
+        borderRadius: 8,
+        boxShadow: "0 4px 16px rgba(0,0,0,0.18)",
+        padding: "10px 12px",
+        fontSize: 13,
+        minWidth: 170,
+      }}
+    >
+      <p style={{ marginBottom: 6, fontSize: 13, fontWeight: 700, color: data.color }}>{data.name}</p>
+      <div style={{ display: "grid", gap: 4 }}>
         {data.income > 0 && (
-          <div className="flex items-center gap-2">
-            <span className="inline-block h-2 w-2 rounded-full" style={{ backgroundColor: "#10B981" }} />
-            <span className="text-muted-foreground">Entradas:</span>
-            <span className="font-medium tabular-nums" style={{ color: "#10B981" }}>{brl(data.income)}</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 999, background: "#10B981" }} />
+            <span style={{ color: TOOLTIP_MUTED }}>Entradas:</span>
+            <span style={{ fontWeight: 700, color: "#10B981", marginLeft: "auto" }}>{brl(data.income)}</span>
           </div>
         )}
         {data.expense > 0 && (
-          <div className="flex items-center gap-2">
-            <span className="inline-block h-2 w-2 rounded-full" style={{ backgroundColor: "#EF4444" }} />
-            <span className="text-muted-foreground">Saídas:</span>
-            <span className="font-medium tabular-nums" style={{ color: "#EF4444" }}>{brl(data.expense)}</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 999, background: "#EF4444" }} />
+            <span style={{ color: TOOLTIP_MUTED }}>Saídas:</span>
+            <span style={{ fontWeight: 700, color: "#EF4444", marginLeft: "auto" }}>{brl(data.expense)}</span>
           </div>
         )}
-        <div className="mt-1 flex items-center gap-2 border-t border-border pt-1">
-          <span className="text-muted-foreground">Total:</span>
-          <span className="font-semibold tabular-nums">{brl(data.total)}</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, borderTop: "1px solid #E2E8F0", paddingTop: 4, marginTop: 2 }}>
+          <span style={{ color: TOOLTIP_MUTED }}>Total:</span>
+          <span style={{ fontWeight: 700, color: TOOLTIP_TEXT, marginLeft: "auto" }}>{brl(data.total)}</span>
         </div>
       </div>
     </div>
@@ -184,7 +237,7 @@ function Dashboard() {
                 <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="3 3" opacity={0.3} />
                 <XAxis dataKey="label" stroke="currentColor" fontSize={11} />
                 <YAxis stroke="currentColor" fontSize={11} />
-                <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8 }} formatter={(v: number) => brl(v)} />
+                <Tooltip cursor={{ fill: "rgba(148,163,184,0.12)" }} wrapperStyle={{ outline: "none", zIndex: 50 }} content={<CustomChartTooltip />} />
                 <Area type="monotone" dataKey="total" stroke="var(--primary)" strokeWidth={2} fill="url(#grad)" />
               </AreaChart>
             );
@@ -193,7 +246,7 @@ function Dashboard() {
                 <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="3 3" opacity={0.3} />
                 <XAxis dataKey="label" stroke="currentColor" fontSize={11} />
                 <YAxis stroke="currentColor" fontSize={11} />
-                <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8 }} formatter={(v: number) => brl(v)} />
+                <Tooltip cursor={{ fill: "rgba(148,163,184,0.12)" }} wrapperStyle={{ outline: "none", zIndex: 50 }} content={<CustomChartTooltip />} />
                 <Bar dataKey="total" fill="var(--primary)" radius={[6, 6, 0, 0]} />
               </BarChart>
             );
@@ -202,7 +255,7 @@ function Dashboard() {
                 <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="3 3" opacity={0.3} />
                 <XAxis dataKey="label" stroke="currentColor" fontSize={11} />
                 <YAxis stroke="currentColor" fontSize={11} />
-                <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8 }} formatter={(v: number) => brl(v)} />
+                <Tooltip cursor={{ fill: "rgba(148,163,184,0.12)" }} wrapperStyle={{ outline: "none", zIndex: 50 }} content={<CustomChartTooltip />} />
                 <Line type="monotone" dataKey="total" stroke="var(--primary)" strokeWidth={2} dot={false} />
               </LineChart>
             );
@@ -231,7 +284,7 @@ function Dashboard() {
                 <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="3 3" opacity={0.3} />
                 <XAxis dataKey="name" stroke="currentColor" fontSize={11} />
                 <YAxis stroke="currentColor" fontSize={11} />
-                <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8 }} formatter={(v: number) => brl(v)} />
+                <Tooltip cursor={{ fill: "rgba(148,163,184,0.12)" }} wrapperStyle={{ outline: "none", zIndex: 50 }} content={<CustomChartTooltip />} />
                 <Line type="monotone" dataKey="total" stroke="var(--primary)" strokeWidth={2} />
               </LineChart>
             );
@@ -240,7 +293,7 @@ function Dashboard() {
                 <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="3 3" opacity={0.3} />
                 <XAxis dataKey="name" stroke="currentColor" fontSize={11} />
                 <YAxis stroke="currentColor" fontSize={11} />
-                <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8 }} formatter={(v: number) => brl(v)} />
+                <Tooltip cursor={{ fill: "rgba(148,163,184,0.12)" }} wrapperStyle={{ outline: "none", zIndex: 50 }} content={<CustomChartTooltip />} />
                 <Bar dataKey="total" radius={[6, 6, 0, 0]}>
                   {byCat.map((c, i) => <Cell key={i} fill={c.color} />)}
                 </Bar>
