@@ -187,3 +187,122 @@ function CotacoesPage() {
     </div>
   );
 }
+
+function Converter({ quotes }: { quotes: Quote[] | null }) {
+  const available = useMemo(
+    () => (quotes ?? []).filter((q) => isValidQuote(q)),
+    [quotes],
+  );
+  const [currency, setCurrency] = useState<string>("USD");
+  const [direction, setDirection] = useState<"toBRL" | "fromBRL">("toBRL");
+  const [amount, setAmount] = useState<string>("1");
+
+  useEffect(() => {
+    if (available.length && !available.find((q) => q.code === currency)) {
+      setCurrency(available[0].code);
+    }
+  }, [available, currency]);
+
+  const quote = available.find((q) => q.code === currency);
+  const rate = quote?.bid ?? 0;
+  const parsed = Number(amount.replace(",", ".")) || 0;
+  const result = direction === "toBRL" ? parsed * rate : rate > 0 ? parsed / rate : 0;
+
+  const fmtCurrency = (v: number, code: string) => {
+    if (!Number.isFinite(v)) return "—";
+    const isCrypto = code === "BTC" || code === "ETH";
+    return new Intl.NumberFormat("pt-BR", {
+      minimumFractionDigits: isCrypto ? 8 : 2,
+      maximumFractionDigits: isCrypto ? 8 : 2,
+    }).format(v);
+  };
+
+  const fromCode = direction === "toBRL" ? currency : "BRL";
+  const toCode = direction === "toBRL" ? "BRL" : currency;
+
+  return (
+    <Card className="mt-6 animate-fade-in">
+      <CardContent className="p-5">
+        <div className="mb-4 flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 text-white shadow">
+            <Calculator className="h-5 w-5" />
+          </div>
+          <div>
+            <h2 className="text-base font-semibold tracking-tight">Conversor em tempo real</h2>
+            <p className="text-xs text-muted-foreground">
+              Converta entre Real e outras moedas usando as cotações atuais
+            </p>
+          </div>
+        </div>
+
+        <div className="grid items-end gap-3 sm:grid-cols-[1fr_auto_1fr]">
+          <div className="space-y-2">
+            <Label htmlFor="conv-from" className="text-xs text-muted-foreground">
+              De ({fromCode})
+            </Label>
+            <div className="flex gap-2">
+              <Input
+                id="conv-from"
+                inputMode="decimal"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="0,00"
+                className="font-medium tabular-nums"
+              />
+              {direction === "toBRL" ? (
+                <Select value={currency} onValueChange={setCurrency}>
+                  <SelectTrigger className="w-[130px]"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {available.map((q) => (
+                      <SelectItem key={q.code} value={q.code}>{q.code}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <div className="flex h-9 items-center rounded-md border bg-muted px-3 text-sm font-medium">BRL</div>
+              )}
+            </div>
+          </div>
+
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            onClick={() => setDirection((d) => (d === "toBRL" ? "fromBRL" : "toBRL"))}
+            className="mb-0 sm:mb-0 mx-auto"
+            aria-label="Inverter conversão"
+          >
+            <ArrowLeftRight className="h-4 w-4" />
+          </Button>
+
+          <div className="space-y-2">
+            <Label className="text-xs text-muted-foreground">Para ({toCode})</Label>
+            <div className="flex gap-2">
+              <div className="flex h-9 flex-1 items-center rounded-md border bg-muted/40 px-3 text-sm font-semibold tabular-nums">
+                {rate > 0 ? fmtCurrency(result, toCode) : "Indisponível"}
+              </div>
+              {direction === "fromBRL" ? (
+                <Select value={currency} onValueChange={setCurrency}>
+                  <SelectTrigger className="w-[130px]"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {available.map((q) => (
+                      <SelectItem key={q.code} value={q.code}>{q.code}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <div className="flex h-9 items-center rounded-md border bg-muted px-3 text-sm font-medium">BRL</div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {rate > 0 && (
+          <p className="mt-3 text-xs text-muted-foreground">
+            1 {currency} = {fmtBRL(rate)} · 1 BRL = {fmtCurrency(1 / rate, currency)} {currency}
+          </p>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
