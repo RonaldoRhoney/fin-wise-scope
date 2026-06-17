@@ -178,9 +178,12 @@ function CotacoesPage() {
             })}
       </section>
 
+      <Converter quotes={quotes} />
+
       <p className="mt-6 text-center text-xs text-muted-foreground">
         Dados fornecidos pela AwesomeAPI · Atualização automática a cada 60s
       </p>
+
     </div>
   );
 }
