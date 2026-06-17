@@ -148,7 +148,7 @@ function GoalCard({ goal, onChange }: { goal: Goal; onChange: () => void }) {
   const remove = async () => {
     if (!confirm(t("metas.confirmDelete"))) return;
     const { error } = await supabase.from("savings_goals").delete().eq("id", goal.id);
-    if (error) return toast.error(error.message);
+    if (error) return toast.error(toUserMessage(error, t("errors.generic")));
     toast.success(t("metas.deleted")); onChange();
   };
 
