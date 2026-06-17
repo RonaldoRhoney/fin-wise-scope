@@ -16,6 +16,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import { toUserMessage } from "@/lib/finwise/errors";
 import {
   Plane, Car, Bike, Laptop, Home, GraduationCap, Heart, PiggyBank, Plus, Trash2, Wallet,
 } from "lucide-react";
