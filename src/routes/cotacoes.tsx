@@ -34,7 +34,7 @@ const PAIRS = [
   { code: "EUR", name: "Euro", flag: "🇪🇺" },
   { code: "GBP", name: "Libra Esterlina", flag: "🇬🇧" },
   { code: "BTC", name: "Bitcoin", flag: "₿" },
-  { code: "ARS", name: "Peso Argentino", flag: "🇦🇷" },
+  { code: "ETH", name: "Ethereum", flag: "Ξ" },
 ] as const;
 
 type Quote = {
