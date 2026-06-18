@@ -100,6 +100,15 @@ const FONT_STEPS = [
   { label: "A+++", scale: 1.5 },
 ] as const;
 
+const RATE_STEPS = [
+  { label: "0,75x", rate: 0.75 },
+  { label: "1x", rate: 1 },
+  { label: "1,25x", rate: 1.25 },
+  { label: "1,5x", rate: 1.5 },
+  { label: "1,75x", rate: 1.75 },
+  { label: "2x", rate: 2 },
+] as const;
+
 function EducacaoPage() {
   const [isReading, setIsReading] = useState(false);
   const [fontIndex, setFontIndex] = useState(0);
