@@ -112,6 +112,7 @@ const RATE_STEPS = [
 function EducacaoPage() {
   const [isReading, setIsReading] = useState(false);
   const [fontIndex, setFontIndex] = useState(0);
+  const [rateIndex, setRateIndex] = useState(1); // 1x padrão
   const [supported, setSupported] = useState(true);
   const utterRef = useRef<SpeechSynthesisUtterance | null>(null);
 
