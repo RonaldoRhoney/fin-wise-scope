@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { AlertTriangle, ExternalLink, GraduationCap, Sparkles, Play, Square, Type } from "lucide-react";
+import { AlertTriangle, ExternalLink, GraduationCap, Sparkles, Play, Square, Type, Gauge } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -100,9 +100,19 @@ const FONT_STEPS = [
   { label: "A+++", scale: 1.5 },
 ] as const;
 
+const RATE_STEPS = [
+  { label: "0,75x", rate: 0.75 },
+  { label: "1x", rate: 1 },
+  { label: "1,25x", rate: 1.25 },
+  { label: "1,5x", rate: 1.5 },
+  { label: "1,75x", rate: 1.75 },
+  { label: "2x", rate: 2 },
+] as const;
+
 function EducacaoPage() {
   const [isReading, setIsReading] = useState(false);
   const [fontIndex, setFontIndex] = useState(0);
+  const [rateIndex, setRateIndex] = useState(1); // 1x padrão
   const [supported, setSupported] = useState(true);
   const utterRef = useRef<SpeechSynthesisUtterance | null>(null);
 
@@ -134,7 +144,7 @@ function EducacaoPage() {
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(fullText);
     u.lang = "pt-BR";
-    u.rate = 0.9;
+    u.rate = RATE_STEPS[rateIndex].rate;
     u.pitch = 1;
     u.volume = 1;
     const v = pickPtVoice();
@@ -194,6 +204,44 @@ function EducacaoPage() {
               </span>
             </span>
           </button>
+
+          <div className="flex items-center gap-2">
+            <Gauge className="h-4 w-4 text-muted-foreground" />
+            <div className="flex overflow-hidden rounded-lg border border-border/60">
+              {RATE_STEPS.map((s, i) => (
+                <button
+                  key={s.label}
+                  type="button"
+                  onClick={() => {
+                    setRateIndex(i);
+                    if (isReading) {
+                      window.speechSynthesis.cancel();
+                      const u = new SpeechSynthesisUtterance(fullText);
+                      u.lang = "pt-BR";
+                      u.rate = RATE_STEPS[i].rate;
+                      u.pitch = 1;
+                      u.volume = 1;
+                      const v = pickPtVoice();
+                      if (v) u.voice = v;
+                      u.onend = () => setIsReading(false);
+                      u.onerror = () => setIsReading(false);
+                      utterRef.current = u;
+                      window.speechSynthesis.speak(u);
+                    }
+                  }}
+                  aria-pressed={rateIndex === i}
+                  aria-label={`Velocidade ${s.label}`}
+                  className={`px-2.5 py-2 text-xs font-semibold transition-colors ${
+                    rateIndex === i
+                      ? "bg-emerald-500 text-white"
+                      : "bg-card text-muted-foreground hover:bg-muted"
+                  }`}
+                >
+                  {s.label}
+                </button>
+              ))}
+            </div>
+          </div>
 
           <div className="flex items-center gap-2">
             <Type className="h-4 w-4 text-muted-foreground" />
