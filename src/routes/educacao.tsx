@@ -206,6 +206,44 @@ function EducacaoPage() {
           </button>
 
           <div className="flex items-center gap-2">
+            <Gauge className="h-4 w-4 text-muted-foreground" />
+            <div className="flex overflow-hidden rounded-lg border border-border/60">
+              {RATE_STEPS.map((s, i) => (
+                <button
+                  key={s.label}
+                  type="button"
+                  onClick={() => {
+                    setRateIndex(i);
+                    if (isReading) {
+                      window.speechSynthesis.cancel();
+                      const u = new SpeechSynthesisUtterance(fullText);
+                      u.lang = "pt-BR";
+                      u.rate = RATE_STEPS[i].rate;
+                      u.pitch = 1;
+                      u.volume = 1;
+                      const v = pickPtVoice();
+                      if (v) u.voice = v;
+                      u.onend = () => setIsReading(false);
+                      u.onerror = () => setIsReading(false);
+                      utterRef.current = u;
+                      window.speechSynthesis.speak(u);
+                    }
+                  }}
+                  aria-pressed={rateIndex === i}
+                  aria-label={`Velocidade ${s.label}`}
+                  className={`px-2.5 py-2 text-xs font-semibold transition-colors ${
+                    rateIndex === i
+                      ? "bg-emerald-500 text-white"
+                      : "bg-card text-muted-foreground hover:bg-muted"
+                  }`}
+                >
+                  {s.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
             <Type className="h-4 w-4 text-muted-foreground" />
             <div className="flex overflow-hidden rounded-lg border border-border/60">
               {FONT_STEPS.map((s, i) => (
