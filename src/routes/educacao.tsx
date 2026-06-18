@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { AlertTriangle, ExternalLink, GraduationCap, Sparkles } from "lucide-react";
+import { AlertTriangle, ExternalLink, GraduationCap, Sparkles, Play, Square, Type } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -79,15 +80,144 @@ const SOURCES: Source[] = [
   },
 ];
 
+const DISCLAIMER_TEXT =
+  "Aviso importante. Este conteúdo tem finalidade exclusivamente educacional e informativa. Não constitui oferta, recomendação, consultoria ou análise de investimento, nos termos da Resolução CVM número 19 de 2021. Investimentos envolvem riscos, incluindo perda do capital investido. Antes de tomar decisões financeiras, consulte um profissional certificado e avalie seu perfil de investidor.";
+
+function buildFullReading(): string {
+  const intro =
+    "Educação Financeira. Conteúdo informativo para ampliar seu conhecimento sobre o mercado financeiro.";
+  const concepts = CONCEPTS.map((c) => `${c.title}. ${c.body}`).join(" ");
+  const sourcesIntro =
+    "Para saber mais. Os links a seguir levam a sites oficiais e plataformas regulamentadas.";
+  const sources = SOURCES.map((s) => `${s.name}. ${s.description}`).join(" ");
+  return [DISCLAIMER_TEXT, intro, "Conceitos básicos.", concepts, sourcesIntro, sources].join(" ");
+}
+
+const FONT_STEPS = [
+  { label: "A", scale: 1 },
+  { label: "A+", scale: 1.15 },
+  { label: "A++", scale: 1.3 },
+  { label: "A+++", scale: 1.5 },
+] as const;
+
 function EducacaoPage() {
+  const [isReading, setIsReading] = useState(false);
+  const [fontIndex, setFontIndex] = useState(0);
+  const [supported, setSupported] = useState(true);
+  const utterRef = useRef<SpeechSynthesisUtterance | null>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) {
+      setSupported(false);
+    }
+    return () => {
+      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
+
+  const fullText = useMemo(() => buildFullReading(), []);
+  const scale = FONT_STEPS[fontIndex].scale;
+
+  function pickPtVoice(): SpeechSynthesisVoice | null {
+    const voices = window.speechSynthesis.getVoices();
+    return (
+      voices.find((v) => /pt[-_]BR/i.test(v.lang)) ||
+      voices.find((v) => /^pt/i.test(v.lang)) ||
+      null
+    );
+  }
+
+  function startReading() {
+    if (!supported) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(fullText);
+    u.lang = "pt-BR";
+    u.rate = 0.9;
+    u.pitch = 1;
+    u.volume = 1;
+    const v = pickPtVoice();
+    if (v) u.voice = v;
+    u.onend = () => setIsReading(false);
+    u.onerror = () => setIsReading(false);
+    utterRef.current = u;
+    setIsReading(true);
+    // Some browsers need voices to be loaded asynchronously
+    if (window.speechSynthesis.getVoices().length === 0) {
+      window.speechSynthesis.onvoiceschanged = () => {
+        const vv = pickPtVoice();
+        if (vv) u.voice = vv;
+        window.speechSynthesis.speak(u);
+      };
+    } else {
+      window.speechSynthesis.speak(u);
+    }
+  }
+
+  function stopReading() {
+    if (!supported) return;
+    window.speechSynthesis.cancel();
+    setIsReading(false);
+  }
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" style={{ fontSize: `${scale}rem` }}>
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Educação Financeira</h1>
         <p className="text-sm text-muted-foreground">
           Conteúdo informativo para ampliar seu conhecimento sobre o mercado financeiro
         </p>
       </div>
+
+      {/* Reader & font controls */}
+      <Card className="border-emerald-500/40 bg-emerald-500/5">
+        <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <button
+            type="button"
+            onClick={isReading ? stopReading : startReading}
+            disabled={!supported}
+            aria-label={isReading ? "Parar leitura" : "Iniciar leitura em voz alta"}
+            className="flex flex-1 items-center gap-3 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-4 py-3 text-left transition-colors hover:bg-emerald-500/20 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-white">
+              {isReading ? <Square className="h-5 w-5" /> : <Play className="h-5 w-5" />}
+            </span>
+            <span className="flex flex-col">
+              <span className="text-sm font-semibold text-foreground">
+                {isReading ? "Tocar para parar a leitura" : "Tocar aqui para ouvir o conteúdo"}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {supported
+                  ? "Leitura em voz alta, calma e clara, em português."
+                  : "Seu navegador não suporta leitura em voz alta."}
+              </span>
+            </span>
+          </button>
+
+          <div className="flex items-center gap-2">
+            <Type className="h-4 w-4 text-muted-foreground" />
+            <div className="flex overflow-hidden rounded-lg border border-border/60">
+              {FONT_STEPS.map((s, i) => (
+                <button
+                  key={s.label}
+                  type="button"
+                  onClick={() => setFontIndex(i)}
+                  aria-pressed={fontIndex === i}
+                  aria-label={`Tamanho de fonte ${s.label}`}
+                  className={`px-3 py-2 text-xs font-semibold transition-colors ${
+                    fontIndex === i
+                      ? "bg-emerald-500 text-white"
+                      : "bg-card text-muted-foreground hover:bg-muted"
+                  }`}
+                >
+                  {s.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="sticky top-0 z-20 -mx-2 px-2 py-1 backdrop-blur">
         <Card className="border-amber-500/40 bg-amber-500/10 text-amber-100">
