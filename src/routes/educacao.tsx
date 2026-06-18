@@ -181,19 +181,19 @@ function EducacaoPage() {
       </div>
 
       {/* Reader & font controls */}
-      <Card className="border-emerald-500/40 bg-emerald-500/5">
-        <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
+      <Card className="w-full border-emerald-500/40 bg-emerald-500/5">
+        <CardContent className="flex flex-col gap-3 p-3 sm:p-4">
           <button
             type="button"
             onClick={isReading ? stopReading : startReading}
             disabled={!supported}
             aria-label={isReading ? "Parar leitura" : "Iniciar leitura em voz alta"}
-            className="flex flex-1 items-center gap-3 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-4 py-3 text-left transition-colors hover:bg-emerald-500/20 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex w-full items-center gap-3 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3 py-3 text-left transition-colors hover:bg-emerald-500/20 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-white">
               {isReading ? <Square className="h-5 w-5" /> : <Play className="h-5 w-5" />}
             </span>
-            <span className="flex flex-col">
+            <span className="flex min-w-0 flex-col">
               <span className="text-sm font-semibold text-foreground">
                 {isReading ? "Tocar para parar a leitura" : "Tocar aqui para ouvir o conteúdo"}
               </span>
@@ -205,9 +205,9 @@ function EducacaoPage() {
             </span>
           </button>
 
-          <div className="flex items-center gap-2">
-            <Gauge className="h-4 w-4 text-muted-foreground" />
-            <div className="flex overflow-hidden rounded-lg border border-border/60">
+          <div className="flex flex-wrap items-center gap-2">
+            <Gauge className="h-4 w-4 shrink-0 text-muted-foreground" />
+            <div className="flex flex-wrap gap-1 rounded-lg border border-border/60 p-1">
               {RATE_STEPS.map((s, i) => (
                 <button
                   key={s.label}
@@ -231,7 +231,7 @@ function EducacaoPage() {
                   }}
                   aria-pressed={rateIndex === i}
                   aria-label={`Velocidade ${s.label}`}
-                  className={`px-2.5 py-2 text-xs font-semibold transition-colors ${
+                  className={`rounded-md px-2 py-1.5 text-xs font-semibold transition-colors ${
                     rateIndex === i
                       ? "bg-emerald-500 text-white"
                       : "bg-card text-muted-foreground hover:bg-muted"
@@ -243,9 +243,9 @@ function EducacaoPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Type className="h-4 w-4 text-muted-foreground" />
-            <div className="flex overflow-hidden rounded-lg border border-border/60">
+          <div className="flex flex-wrap items-center gap-2">
+            <Type className="h-4 w-4 shrink-0 text-muted-foreground" />
+            <div className="flex flex-wrap gap-1 rounded-lg border border-border/60 p-1">
               {FONT_STEPS.map((s, i) => (
                 <button
                   key={s.label}
@@ -253,7 +253,7 @@ function EducacaoPage() {
                   onClick={() => setFontIndex(i)}
                   aria-pressed={fontIndex === i}
                   aria-label={`Tamanho de fonte ${s.label}`}
-                  className={`px-3 py-2 text-xs font-semibold transition-colors ${
+                  className={`rounded-md px-2.5 py-1.5 text-xs font-semibold transition-colors ${
                     fontIndex === i
                       ? "bg-emerald-500 text-white"
                       : "bg-card text-muted-foreground hover:bg-muted"

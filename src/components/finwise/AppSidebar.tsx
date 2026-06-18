@@ -131,8 +131,8 @@ export function MobileTopBar() {
   const [open, setOpen] = useState(false);
   const { t } = useTranslation();
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border/60 bg-sidebar/80 px-4 backdrop-blur lg:hidden">
-      <div className="text-base font-semibold tracking-tight">{t("app.name")}</div>
+    <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-2 border-b border-border/60 bg-sidebar/80 px-3 backdrop-blur sm:px-4 lg:hidden">
+      <div className="truncate text-sm font-semibold tracking-tight sm:text-base">{t("app.name")}</div>
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
           <Button size="icon" variant="ghost" aria-label={t("nav.menu")}>
