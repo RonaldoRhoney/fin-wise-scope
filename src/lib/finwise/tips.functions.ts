@@ -141,10 +141,14 @@ Histórico (últimos meses arquivados): ${JSON.stringify(history)}
 
     if (!res.ok) {
       const errText = await res.text().catch(() => "");
-      if (res.status === 429) throw new Error("rate_limited");
-      if (res.status === 402) throw new Error("payment_required");
       console.error("[TipsMoney] gateway error", res.status, errText);
-      throw new Error("ai_error");
+      const code =
+        res.status === 429
+          ? "rate_limited"
+          : res.status === 402
+          ? "payment_required"
+          : "ai_error";
+      return { reply: "", summary: current, error: code as "rate_limited" | "payment_required" | "ai_error" };
     }
 
     const payload = await res.json();
