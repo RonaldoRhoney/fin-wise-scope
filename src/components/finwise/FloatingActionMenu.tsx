@@ -120,7 +120,8 @@ export function FloatingActionMenu({ onIncome, onExpense, onVoiceParsed }: Props
       </div>
       <button
         onClick={() => setOpen(!open)}
-        className={`flex h-14 w-14 items-center justify-center rounded-full shadow-xl ring-1 backdrop-blur-sm transition-all duration-300 ${open ? "bg-rose-500/90 text-white rotate-45 ring-rose-400/50 hover:bg-rose-500" : "bg-primary/90 text-white rotate-0 ring-primary/50 hover:bg-primary"}`}
+        className={`flex h-14 w-14 items-center justify-center rounded-full shadow-2xl ring-2 transition-all duration-300 ${open ? "bg-rose-500 text-white rotate-45 ring-rose-300/60 hover:bg-rose-600" : "bg-primary text-white rotate-0 ring-primary/60 hover:bg-primary/90"}`}
+        style={{ filter: "drop-shadow(0 6px 16px rgba(0,0,0,0.35))" }}
         aria-label="Menu de ações"
       >
         <Plus className="h-6 w-6" />
