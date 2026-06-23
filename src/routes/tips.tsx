@@ -66,7 +66,14 @@ function TipsPage() {
           language: lang,
         },
       });
-      setMessages((prev) => [...prev, { role: "assistant", content: res.reply || "…" }]);
+      if ((res as any).error) {
+        const code = (res as any).error;
+        if (code === "rate_limited") toast.error(t("tips.errors.rate"));
+        else if (code === "payment_required") toast.error(t("tips.errors.credits"));
+        else toast.error(t("tips.errors.generic"));
+      } else {
+        setMessages((prev) => [...prev, { role: "assistant", content: res.reply || "…" }]);
+      }
     } catch (err: any) {
       const msg = err?.message || "";
       if (msg.includes("rate_limited")) toast.error(t("tips.errors.rate"));
