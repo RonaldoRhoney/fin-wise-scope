@@ -67,52 +67,71 @@ function AuthPage() {
     toast.success(t("auth.resetSent"));
   };
 
-  const onOAuth = async (provider: "google" | "apple") => {
+  const onGoogle = async () => {
     setBusy(true);
-    const result = await lovable.auth.signInWithOAuth(provider, { redirect_uri: window.location.origin });
+    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
     if (result.error) {
       setBusy(false);
-      return toast.error(result.error.message ?? t("auth.oauthFail", { provider }));
+      return toast.error(result.error.message ?? t("auth.oauthFail", { provider: "google" }));
     }
     if (result.redirected) return;
     navigate({ to: "/" });
   };
-  const onGoogle = () => onOAuth("google");
-  const onApple = () => onOAuth("apple");
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden p-6" style={{ background: "linear-gradient(135deg, oklch(0.18 0.08 260) 0%, oklch(0.16 0.10 280) 50%, oklch(0.20 0.12 300) 100%)" }}>
+    <div
+      className="relative flex min-h-screen items-center justify-center overflow-hidden p-6"
+      style={{ background: "linear-gradient(135deg, oklch(0.16 0.08 260) 0%, oklch(0.14 0.10 280) 50%, oklch(0.18 0.13 305) 100%)" }}
+    >
+      {/* animated ambient orbs */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -left-24 -top-24 h-80 w-80 rounded-full opacity-40 blur-3xl animate-pulse"
+             style={{ background: "radial-gradient(circle, oklch(0.78 0.17 165) 0%, transparent 70%)" }} />
+        <div className="absolute -right-32 top-1/3 h-96 w-96 rounded-full opacity-30 blur-3xl animate-pulse"
+             style={{ background: "radial-gradient(circle, oklch(0.72 0.15 210) 0%, transparent 70%)", animationDelay: "1s" }} />
+        <div className="absolute left-1/3 -bottom-32 h-80 w-80 rounded-full opacity-30 blur-3xl animate-pulse"
+             style={{ background: "radial-gradient(circle, oklch(0.65 0.20 305) 0%, transparent 70%)", animationDelay: "2s" }} />
+      </div>
       <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden select-none">
         <span className="absolute left-[8%] top-[12%] text-7xl font-light text-primary/10 blur-[1px]">$</span>
         <span className="absolute left-[78%] top-[18%] text-5xl font-light text-primary/15">$</span>
         <span className="absolute left-[20%] top-[78%] text-6xl font-light text-accent/15">$</span>
         <span className="absolute left-[85%] top-[72%] text-8xl font-light text-primary/10 blur-[2px]">$</span>
-        <span className="absolute left-[45%] top-[6%] text-4xl font-light text-primary/20">$</span>
-        <span className="absolute left-[60%] top-[88%] text-5xl font-light text-accent/15 blur-[1px]">$</span>
       </div>
-      <Card className="relative w-full max-w-md border-border/60 backdrop-blur-sm" style={{ boxShadow: "var(--shadow-elegant)" }}>
-        <CardHeader className="space-y-2">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl text-primary-foreground" style={{ background: "linear-gradient(135deg, oklch(0.78 0.17 165), oklch(0.72 0.15 210))", boxShadow: "0 0 40px color-mix(in oklab, oklch(0.78 0.17 165) 40%, transparent)" }}>
+      <Card
+        className="relative w-full max-w-md border-border/40 bg-card/70 backdrop-blur-xl animate-in fade-in zoom-in-95 duration-500"
+        style={{ boxShadow: "0 24px 80px -20px oklch(0 0 0 / 0.6), 0 0 0 1px oklch(1 0 0 / 0.05) inset" }}
+      >
+        <CardHeader className="space-y-3 pb-4">
+          <div
+            className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl text-primary-foreground transition-transform hover:scale-105"
+            style={{
+              background: "linear-gradient(135deg, oklch(0.78 0.17 165), oklch(0.72 0.15 210))",
+              boxShadow: "0 0 50px color-mix(in oklab, oklch(0.78 0.17 165) 50%, transparent)",
+            }}
+          >
             <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
             </svg>
           </div>
-          <CardTitle className="text-center text-2xl tracking-tight">{t("app.name")}</CardTitle>
+          <CardTitle className="text-center text-2xl font-semibold tracking-tight">{t("app.name")}</CardTitle>
           <p className="text-center text-sm text-muted-foreground">{t("app.tagline")}</p>
         </CardHeader>
         <CardContent>
           <div className="grid gap-2 pb-4">
-            <Button type="button" variant="outline" disabled={busy} onClick={onGoogle} className="border-white/80 bg-transparent text-foreground hover:bg-white/10 hover:text-foreground">
+            <Button
+              type="button"
+              variant="outline"
+              disabled={busy}
+              onClick={onGoogle}
+              className="border-white/20 bg-white/5 text-foreground transition-all hover:scale-[1.02] hover:bg-white/10 active:scale-[0.98]"
+            >
               <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 10.2v3.9h5.5c-.24 1.3-1.66 3.8-5.5 3.8-3.31 0-6-2.74-6-6.1s2.69-6.1 6-6.1c1.88 0 3.14.8 3.86 1.49l2.63-2.54C16.84 3.13 14.65 2.2 12 2.2 6.85 2.2 2.7 6.35 2.7 11.5S6.85 20.8 12 20.8c6.93 0 9.3-4.86 9.3-7.4 0-.5-.05-.88-.13-1.2H12z"/></svg>
               {t("auth.continueGoogle")}
             </Button>
-            <Button type="button" variant="outline" disabled={busy} onClick={onApple} className="border-white bg-white text-black hover:bg-white/90 hover:text-black">
-              <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.365 12.86c-.02-2.07 1.69-3.06 1.77-3.11-.97-1.41-2.47-1.6-3-1.62-1.28-.13-2.5.75-3.15.75-.65 0-1.66-.74-2.73-.72-1.4.02-2.7.82-3.42 2.07-1.46 2.53-.37 6.27 1.05 8.32.69.99 1.52 2.11 2.6 2.07 1.04-.04 1.44-.67 2.7-.67 1.26 0 1.62.67 2.73.65 1.13-.02 1.84-1.01 2.53-2.01.8-1.16 1.13-2.28 1.15-2.34-.03-.01-2.21-.85-2.23-3.39zM14.3 6.42c.57-.69.96-1.65.85-2.6-.82.03-1.82.55-2.41 1.24-.53.61-1 1.59-.87 2.52.92.07 1.86-.47 2.43-1.16z"/></svg>
-              {t("auth.continueApple")}
-            </Button>
-            <div className="relative my-1 text-center text-xs text-muted-foreground">
-              <span className="relative z-10 bg-card px-2">{t("auth.orEmail")}</span>
-              <div className="absolute inset-x-0 top-1/2 h-px bg-border" />
+            <div className="relative my-2 text-center text-xs text-muted-foreground">
+              <span className="relative z-10 bg-card/0 px-2">{t("auth.orEmail")}</span>
+              <div className="absolute inset-x-0 top-1/2 h-px bg-border/60" />
             </div>
           </div>
           <Tabs value={tab} onValueChange={(v) => setTab(v as any)}>

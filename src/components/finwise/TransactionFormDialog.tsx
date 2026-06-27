@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useFinwise } from "@/lib/finwise/store";
@@ -32,6 +33,8 @@ export function TransactionFormDialog({ open, onOpenChange, initial, forcedType,
   const [categoryId, setCategoryId] = useState<string | undefined>();
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState<string>("");
+  const [submitting, setSubmitting] = useState(false);
+  const submitLock = useRef(false);
 
   useEffect(() => {
     if (open) {
@@ -55,6 +58,7 @@ export function TransactionFormDialog({ open, onOpenChange, initial, forcedType,
   const filteredCats = categories.filter((c) => c.kind === type || c.kind === "both");
 
   const submit = async () => {
+    if (submitLock.current || submitting) return;
     const value = parseFloat(amount.replace(",", "."));
     const errs: string[] = [];
     if (!description.trim()) errs.push(t("form.errors.desc"));
@@ -62,6 +66,8 @@ export function TransactionFormDialog({ open, onOpenChange, initial, forcedType,
     if (!value || value <= 0) errs.push(t("form.errors.amount"));
     if (type === "despesa" && !categoryId) errs.push(t("form.errors.category"));
     if (errs.length) { errs.forEach((e) => toast.error(e)); return; }
+    submitLock.current = true;
+    setSubmitting(true);
     const payload = { type, date, description: description.trim(), categoryId, amount: value };
     try {
       if (initial) {
@@ -73,7 +79,16 @@ export function TransactionFormDialog({ open, onOpenChange, initial, forcedType,
       }
       onOpenChange(false);
     } catch (err) {
-      toast.error(toUserMessage(err, t("form.saveFail")));
+      const msg = (err as Error)?.message;
+      if (msg === "duplicate_transaction") {
+        toast.info("Lançamento já registrado.");
+        onOpenChange(false);
+      } else {
+        toast.error(toUserMessage(err, t("form.saveFail")));
+      }
+    } finally {
+      submitLock.current = false;
+      setSubmitting(false);
     }
   };
 
@@ -133,8 +148,11 @@ export function TransactionFormDialog({ open, onOpenChange, initial, forcedType,
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>{t("common.cancel")}</Button>
-          <Button onClick={submit}>{initial ? t("common.save") : t("common.create")}</Button>
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={submitting}>{t("common.cancel")}</Button>
+          <Button onClick={submit} disabled={submitting} aria-busy={submitting}>
+            {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
+            {initial ? t("common.save") : t("common.create")}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
