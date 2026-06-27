@@ -33,6 +33,8 @@ export function TransactionFormDialog({ open, onOpenChange, initial, forcedType,
   const [categoryId, setCategoryId] = useState<string | undefined>();
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState<string>("");
+  const [submitting, setSubmitting] = useState(false);
+  const submitLock = useRef(false);
 
   useEffect(() => {
     if (open) {
