@@ -159,6 +159,21 @@ export function FinwiseProvider({ children }: { children: ReactNode }) {
 
   const addTransaction: StoreCtx["addTransaction"] = async (t) => {
     if (!profile || !session?.user) throw new Error("Sem perfil");
+    // Dedup: same value/description/category/date inserted in the last 2s
+    const twoSecAgo = new Date(Date.now() - 2000).toISOString();
+    const { data: existing } = await supabase
+      .from("transactions")
+      .select("id,created_at")
+      .eq("user_id", profile.id)
+      .eq("type", t.type)
+      .eq("date", t.date)
+      .eq("description", t.description)
+      .eq("amount", t.amount as unknown as number)
+      .gte("created_at", twoSecAgo)
+      .limit(1);
+    if (existing && existing.length > 0) {
+      throw new Error("duplicate_transaction");
+    }
     const { data, error } = await supabase
       .from("transactions")
       .insert({
@@ -179,7 +194,9 @@ export function FinwiseProvider({ children }: { children: ReactNode }) {
       await archivePreviousMonths(session.user.id);
       await loadProfileAndData(session.user.id);
     } else {
-      setTransactions((p) => [rowToTx(data as DbRow), ...p]);
+      // Refetch instead of manual local merge to keep totals consistent
+      await loadProfileAndData(session.user.id);
+      void data;
     }
   };
 
