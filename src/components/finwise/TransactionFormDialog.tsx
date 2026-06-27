@@ -58,6 +58,7 @@ export function TransactionFormDialog({ open, onOpenChange, initial, forcedType,
   const filteredCats = categories.filter((c) => c.kind === type || c.kind === "both");
 
   const submit = async () => {
+    if (submitLock.current || submitting) return;
     const value = parseFloat(amount.replace(",", "."));
     const errs: string[] = [];
     if (!description.trim()) errs.push(t("form.errors.desc"));
@@ -65,6 +66,8 @@ export function TransactionFormDialog({ open, onOpenChange, initial, forcedType,
     if (!value || value <= 0) errs.push(t("form.errors.amount"));
     if (type === "despesa" && !categoryId) errs.push(t("form.errors.category"));
     if (errs.length) { errs.forEach((e) => toast.error(e)); return; }
+    submitLock.current = true;
+    setSubmitting(true);
     const payload = { type, date, description: description.trim(), categoryId, amount: value };
     try {
       if (initial) {
@@ -76,7 +79,16 @@ export function TransactionFormDialog({ open, onOpenChange, initial, forcedType,
       }
       onOpenChange(false);
     } catch (err) {
-      toast.error(toUserMessage(err, t("form.saveFail")));
+      const msg = (err as Error)?.message;
+      if (msg === "duplicate_transaction") {
+        toast.info("Lançamento já registrado.");
+        onOpenChange(false);
+      } else {
+        toast.error(toUserMessage(err, t("form.saveFail")));
+      }
+    } finally {
+      submitLock.current = false;
+      setSubmitting(false);
     }
   };
 
