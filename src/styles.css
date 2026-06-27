@@ -165,3 +165,14 @@
     overflow-wrap: anywhere;
   }
 }
+
+@keyframes fwFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fwFadeIn 280ms ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in { animation: none; }
+}
