@@ -135,6 +135,26 @@ function GoalCard({ goal, onChange }: { goal: Goal; onChange: () => void }) {
   const [addOpen, setAddOpen] = useState(false);
   const [amount, setAmount] = useState("");
 
+  // AGENT 3 — Goals projection (isolated to this goal)
+  const askProjection = useServerFn(projectGoal);
+  const [projection, setProjection] = useState<string>("");
+  const [projLoading, setProjLoading] = useState(false);
+  const [projError, setProjError] = useState(false);
+  useEffect(() => {
+    let active = true;
+    setProjLoading(true); setProjError(false);
+    askProjection({ data: { goalId: goal.id } })
+      .then((res) => {
+        if (!active) return;
+        if (res.error || !res.reply) setProjError(true);
+        else setProjection(res.reply);
+      })
+      .catch(() => active && setProjError(true))
+      .finally(() => active && setProjLoading(false));
+    return () => { active = false; };
+  }, [goal.id, goal.saved_amount, goal.target_amount, goal.target_date, askProjection]);
+
+
   const addAmount = async () => {
     const v = parseFloat(amount.replace(",", "."));
     if (!v || v <= 0) return toast.error(t("metas.invalidAmount"));
