@@ -157,7 +157,7 @@ export function TransactionFormDialog({ open, onOpenChange, initial, forcedType,
           </div>
           <div className="grid gap-2">
             <Label>{t("form.category")} {type === "entrada" && <span className="text-muted-foreground text-xs">{t("form.optional")}</span>}</Label>
-            <Select value={categoryId} onValueChange={setCategoryId}>
+            <Select value={categoryId} onValueChange={(v) => { userPickedRef.current = true; setCategoryId(v); }}>
               <SelectTrigger><SelectValue placeholder={t("form.select")} /></SelectTrigger>
               <SelectContent>
                 {filteredCats.map((c) => (
@@ -165,6 +165,21 @@ export function TransactionFormDialog({ open, onOpenChange, initial, forcedType,
                 ))}
               </SelectContent>
             </Select>
+            {suggesting && (
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <Loader2 className="h-3 w-3 animate-spin" /> Sugerindo categoria…
+              </div>
+            )}
+            {suggestion && !suggesting && (
+              <button
+                type="button"
+                onClick={() => { setCategoryId(suggestion.id); userPickedRef.current = true; setSuggestion(null); }}
+                className="flex items-center gap-2 self-start rounded-full border border-violet-500/40 bg-violet-500/10 px-3 py-1 text-xs text-violet-200 transition hover:bg-violet-500/20"
+              >
+                <Sparkles className="h-3 w-3" />
+                Usar sugestão: <strong className="font-semibold">{suggestion.name}</strong>
+              </button>
+            )}
           </div>
           <div className="grid gap-2">
             <Label>{t("form.description")}</Label>
