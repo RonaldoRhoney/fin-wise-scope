@@ -306,13 +306,25 @@ function EducacaoPage() {
         </Card>
       </div>
 
+      {intro && (
+        <Card className="border-violet-500/40 bg-violet-500/5">
+          <CardContent className="flex items-start gap-3 p-4">
+            <Bot className="mt-0.5 h-5 w-5 shrink-0 text-violet-400" />
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-violet-300">Agente Educação Financeira</p>
+              <p className="mt-1 text-sm leading-relaxed text-foreground">{intro}</p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <section className="space-y-3">
         <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight">
           <GraduationCap className="h-5 w-5 text-emerald-400" />
           Conceitos básicos
         </h2>
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-          {CONCEPTS.map((c) => (
+          {orderedConcepts.map((c) => (
             <Card key={c.title} className="border-border/60">
               <CardHeader className="pb-2">
                 <CardTitle className="text-base">{c.title}</CardTitle>
