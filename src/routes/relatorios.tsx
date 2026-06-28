@@ -2,15 +2,17 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
 import { useTranslation } from "react-i18next";
+import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { useFinwise } from "@/lib/finwise/store";
 import type { Transaction } from "@/lib/finwise/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download, FileSpreadsheet, ArrowDownCircle, ArrowUpCircle, Wallet } from "lucide-react";
+import { Bot, Download, FileSpreadsheet, ArrowDownCircle, ArrowUpCircle, Wallet, Loader2 } from "lucide-react";
 import { brl, formatDate } from "@/lib/finwise/format";
 import { toast } from "sonner";
 import { toUserMessage } from "@/lib/finwise/errors";
+import { summarizeReport } from "@/lib/finwise/agents/reports.functions";
 
 export const Route = createFileRoute("/relatorios")({
   head: () => ({ meta: [{ title: "Controle Financeiro" }] }),
