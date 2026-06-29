@@ -192,7 +192,7 @@ function Feedback() {
     } else copyLink();
   };
 
-  const reactionMeta: Record<ReactionKind, { label: string; icon: JSX.Element; activeClass: string }> = {
+  const reactionMeta: Record<ReactionKind, { label: string; icon: ReactNode; activeClass: string }> = {
     like: { label: t("feedback.reactLike"), icon: <Heart className="h-4 w-4" />, activeClass: "text-rose-500" },
     love: { label: t("feedback.reactLove"), icon: <Smile className="h-4 w-4" />, activeClass: "text-pink-500" },
     thumbsup: { label: t("feedback.reactThumb"), icon: <ThumbsUp className="h-4 w-4" />, activeClass: "text-blue-500" },
