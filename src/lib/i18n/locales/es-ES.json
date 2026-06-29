@@ -164,10 +164,20 @@
     "noneYet": "Aún no hay comentarios. ¡Sé el primero!",
     "removeAria": "Eliminar",
     "removeFail": "Error al eliminar",
-    "likeFail": "Error al dar me gusta",
-    "unlikeFail": "Error al quitar me gusta",
+    "likeFail": "Error al reaccionar",
+    "unlikeFail": "Error al quitar reacción",
     "minLen": "Escribe algo",
-    "maxLen": "Máximo 500 caracteres"
+    "maxLen": "Máximo 500 caracteres",
+    "reactLike": "Me gusta",
+    "reactLove": "Me encanta",
+    "reactThumb": "Pulgar arriba",
+    "reply": "Responder",
+    "replyPlaceholder": "Escribe una respuesta…",
+    "send": "Enviar",
+    "replyFail": "Error al responder",
+    "replySent": "Respuesta enviada.",
+    "showReplies": "Ver respuestas ({{count}})",
+    "hideReplies": "Ocultar respuestas"
   },
   "perfil": {
     "title": "Mi Perfil",

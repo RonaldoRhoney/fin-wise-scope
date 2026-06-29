@@ -164,10 +164,20 @@
     "noneYet": "No comments yet. Be the first!",
     "removeAria": "Remove",
     "removeFail": "Failed to remove",
-    "likeFail": "Failed to like",
-    "unlikeFail": "Failed to unlike",
+    "likeFail": "Failed to react",
+    "unlikeFail": "Failed to remove reaction",
     "minLen": "Write something",
-    "maxLen": "Max 500 characters"
+    "maxLen": "Max 500 characters",
+    "reactLike": "Like",
+    "reactLove": "Love",
+    "reactThumb": "Thumbs up",
+    "reply": "Reply",
+    "replyPlaceholder": "Write a reply…",
+    "send": "Send",
+    "replyFail": "Failed to reply",
+    "replySent": "Reply sent.",
+    "showReplies": "Show replies ({{count}})",
+    "hideReplies": "Hide replies"
   },
   "perfil": {
     "title": "My Profile",

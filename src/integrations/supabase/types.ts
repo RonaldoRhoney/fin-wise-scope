@@ -76,20 +76,58 @@ export type Database = {
           auth_user_id: string
           created_at: string
           feedback_id: number
+          reaction: string
         }
         Insert: {
           auth_user_id: string
           created_at?: string
           feedback_id: number
+          reaction?: string
         }
         Update: {
           auth_user_id?: string
           created_at?: string
           feedback_id?: number
+          reaction?: string
         }
         Relationships: [
           {
             foreignKeyName: "feedback_likes_feedback_id_fkey"
+            columns: ["feedback_id"]
+            isOneToOne: false
+            referencedRelation: "app_feedback"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      feedback_replies: {
+        Row: {
+          auth_user_id: string
+          author_name: string
+          content: string
+          created_at: string
+          feedback_id: number
+          id: number
+        }
+        Insert: {
+          auth_user_id: string
+          author_name?: string
+          content: string
+          created_at?: string
+          feedback_id: number
+          id?: number
+        }
+        Update: {
+          auth_user_id?: string
+          author_name?: string
+          content?: string
+          created_at?: string
+          feedback_id?: number
+          id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feedback_replies_feedback_id_fkey"
             columns: ["feedback_id"]
             isOneToOne: false
             referencedRelation: "app_feedback"
